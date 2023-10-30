@@ -4,8 +4,12 @@ public class Main {
 
 	public static void main(String[] args) {
 
-		MenuItems.welcomeText();
-		MenuItems.welcomeMenu();
+		Calendar.day(10, 25, 2023);
+		
+		
+		
+//		MenuItems.welcomeText();
+//		MenuItems.welcomeMenu();
 	}
 
 }

@@ -1,28 +1,34 @@
 package com.gft.randomtests;
 
 import java.math.BigInteger;
+import java.security.PublicKey;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.naming.spi.DirStateFactory.Result;
 
 public class Testing {
 
 	public static void main(String[] args) {
-
-		System.out.println(Grains.grainsOnSquare(7));
-		
+			
+		PascalsTriangleJava.getPascalsTriangleRow(5);
 	}
 
-	public class Grains {
-		
-		public static BigInteger grainsOnSquare(final int square) {
-			if (square < 1 || square > 64) throw new IllegalArgumentException();
-			
-			BigInteger result = BigInteger.valueOf(2).pow(square - 1);
-			
-			return result;
+	public class PascalsTriangleJava {
+		public static void getPascalsTriangleRow(int rowNumber) {
+			List<Long> pascalsList = new ArrayList<>();
+
+			for (int i = 0; i < rowNumber; i++) {
+				long number = 1;
+
+				for (int j = 0; j <= i; j++) {
+					System.out.print(number + " ");
+					number = number * (i - j) / (j + 1);
+				}
+				System.out.println();
+			}
 			
 		}
-
 	}
 
 }

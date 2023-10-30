@@ -3,6 +3,7 @@ package carinfos;
 public class Car {
 	
 	//car details 
+	private String carSerialID;
 	private String carBrand;
 	private String carModel;
 	private int horsePower;
@@ -10,8 +11,10 @@ public class Car {
 	private int tankMaxVolume;
 	private int averageUsage; //average gas usage per 100km 
 	
+
 	//constructors
-	public void createCar(String carBrand, String carModel, int horsePower, int maxCarSpeed, int tankMaxVolume, int averageUsage) {
+	public Car(String carSerialID, String carBrand, String carModel, int horsePower, int maxCarSpeed, int tankMaxVolume, int averageUsage) {
+		this.carSerialID = carSerialID;
 		this.setCarBrand(carBrand);
 		this.setCarModel(carModel);
 		this.setHorsePower(horsePower);
@@ -67,6 +70,14 @@ public class Car {
 
 	public void setAverageUsage(int averageUsage) {
 		this.averageUsage = averageUsage;
+	}
+
+	public String getCarSerialID() {
+		return carSerialID;
+	}
+
+	public void setCarSerialID(String carSerialID) {
+		this.carSerialID = carSerialID;
 	}
 	
 

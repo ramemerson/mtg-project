@@ -20,8 +20,7 @@ public class Car {
 		this.setHorsePower(horsePower);
 		this.setMaxCarSpeed(maxCarSpeed);
 		this.setTankMaxVolume(tankMaxVolume);
-		this.setAverageUsage(averageUsage);
-		
+		this.setAverageUsage(averageUsage);	
 	}
 
 	public String getCarBrand() {

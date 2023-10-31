@@ -12,8 +12,9 @@ import java.nio.file.Paths;
 public class CarDatabase {
 
 	private static String carDatabaseFilePath = "src/CarDealership.txt";
-	
-	public Car createNewCar (String carSerialID, String carBrand, String carModel, int horsePower, int maxCarSpeed, int tankMaxVolume, int averageUsage) {
+
+	public Car createNewCar(String carSerialID, String carBrand, String carModel, int horsePower, int maxCarSpeed,
+			int tankMaxVolume, int averageUsage) {
 		if (!carExists(carSerialID)) {
 			Car newCar = new Car(carSerialID, carBrand, carModel, horsePower, maxCarSpeed, tankMaxVolume, averageUsage);
 			addCarsToDatabase(carSerialID, carBrand, carModel, horsePower, maxCarSpeed, tankMaxVolume, averageUsage);
@@ -21,14 +22,14 @@ public class CarDatabase {
 		} else {
 			System.out.println("Car is already in the system!");
 			return null;
-		} 
+		}
 	}
 
-	public void addCarsToDatabase(String carSerialID, String carBrand, String carModel, int horsePower, int maxCarSpeed, int tankMaxVolume,
-			int averageUsage) {
+	public void addCarsToDatabase(String carSerialID, String carBrand, String carModel, int horsePower, int maxCarSpeed,
+			int tankMaxVolume, int averageUsage) {
 		try (BufferedWriter writer = new BufferedWriter(new FileWriter(carDatabaseFilePath, true))) {
-			writer.write(carSerialID + "," + carBrand + "," + carModel + "," + horsePower + "," + maxCarSpeed + "," + tankMaxVolume + ","
-					+ averageUsage);
+			writer.write(carSerialID + "," + carBrand + "," + carModel + "," + horsePower + "," + maxCarSpeed + ","
+					+ tankMaxVolume + "," + averageUsage);
 			writer.newLine();
 			System.out.println("Car added to database!");
 		} catch (IOException e) {
@@ -36,28 +37,32 @@ public class CarDatabase {
 		}
 	}
 
-	public static void printCarsFromDatabase() {
-		BufferedReader reader = null;
-		try {
-			reader = new BufferedReader(new FileReader(carDatabaseFilePath));
+	public void findCar(String carID) {
+		try (BufferedReader reader = new BufferedReader(new FileReader(carDatabaseFilePath))) {
+			String line;
+			while ((line = reader.readLine()) != null) {
+				if (line.contains(carID)) {
+					System.out.println(line);
+				} else {
+					System.out.println("Car not found!");
+				}
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	public void printAllCarsFromDatabase() {
+		try (BufferedReader reader = new BufferedReader(new FileReader(carDatabaseFilePath))) {
 			String line;
 			while ((line = reader.readLine()) != null) {
 				System.out.println(line);
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
-		} finally {
-			try {
-				if (reader != null) {
-					reader.close();
-				}
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
 		}
-
 	}
-	
+
 	public boolean carExists(String carSerialID) {
 		try {
 			return Files.lines(Paths.get(carDatabaseFilePath)).anyMatch(line -> line.startsWith(carSerialID + ","));

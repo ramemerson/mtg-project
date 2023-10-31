@@ -37,19 +37,18 @@ public class CarDatabase {
 		}
 	}
 
-	public void findCar(String carID) {
-		try (BufferedReader reader = new BufferedReader(new FileReader(carDatabaseFilePath))) {
-			String line;
-			while ((line = reader.readLine()) != null) {
-				if (line.contains(carID)) {
-					System.out.println(line);
-				} else {
-					System.out.println("Car not found!");
-				}
+	public String findCarInDatabase(String carID) {
+		String foundCarString = "";
+		try (BufferedReader reader = new BufferedReader(new FileReader(carDatabaseFilePath))) {		
+			for (String line; (line = reader.readLine()) != null;) {
+				if (line.toLowerCase().contains(carID) || line.contains(carID)) {
+					foundCarString = line;
+				} 
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		return foundCarString;
 	}
 
 	public void printAllCarsFromDatabase() {

@@ -4,6 +4,8 @@ import java.util.InputMismatchException;
 import java.util.Scanner;
 import java.util.concurrent.TimeUnit;
 
+import javax.swing.plaf.multi.MultiInternalFrameUI;
+
 import carinfos.CarDatabase;
 
 public class CarMenu {
@@ -142,7 +144,6 @@ public class CarMenu {
 			System.out.println("wrong input, please input a number!");
 			CarMenu.firstSelectionMenu();
 		}
-
 	}
 
 	public static void seeDetailsOfACar() {
@@ -151,9 +152,18 @@ public class CarMenu {
 			while (trueCheck == true) {
 				System.out.println("Enter the car ID of the car details you want to see:");
 				String scannerID = scanner.next();
-				if (scanner != null) {
-					carDatabase.findCar(scannerID);
-				}		
+				if (scannerID != null) {
+					System.out.println(carDatabase.findCarInDatabase(scannerID));				
+					firstSelectionMenu();
+				} else if (carDatabase.findCarInDatabase(scannerID).length() == 0) {
+					System.out.println("car not found!\n[1] Search again\n[2] See list of all cars");
+					int scanNextInt = scanner.nextInt();
+					if (scanNextInt == 1) {
+						seeDetailsOfACar();
+					} else if (scanNextInt == 2) {
+						seeAllCars();
+					}
+				}
 			
 			}
 			trueCheck = false;

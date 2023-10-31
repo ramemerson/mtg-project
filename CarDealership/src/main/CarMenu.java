@@ -4,8 +4,6 @@ import java.util.InputMismatchException;
 import java.util.Scanner;
 import java.util.concurrent.TimeUnit;
 
-import javax.swing.plaf.multi.MultiInternalFrameUI;
-
 import carinfos.CarDatabase;
 
 public class CarMenu {
@@ -99,6 +97,7 @@ public class CarMenu {
 
 	}
 
+	//menu prompt to let you add cars to the car list
 	public static void addCarToDatabase() {
 		try {
 			Scanner scanner = new Scanner(System.in);
@@ -146,13 +145,14 @@ public class CarMenu {
 		}
 	}
 
+	//search for a cared based on its ID
 	public static void seeDetailsOfACar() {
 		try (Scanner scanner = new Scanner(System.in)) {
 			boolean trueCheck = true;
 			while (trueCheck == true) {
 				System.out.println("Enter the car ID of the car details you want to see:");
 				String scannerID = scanner.next();
-				if (scannerID != null) {
+				if (carDatabase.findCarInDatabase(scannerID).length() != 0) {
 					System.out.println(carDatabase.findCarInDatabase(scannerID));				
 					firstSelectionMenu();
 				} else if (carDatabase.findCarInDatabase(scannerID).length() == 0) {
@@ -162,6 +162,7 @@ public class CarMenu {
 						seeDetailsOfACar();
 					} else if (scanNextInt == 2) {
 						seeAllCars();
+						firstSelectionMenu();
 					}
 				}
 			
@@ -173,8 +174,9 @@ public class CarMenu {
 
 	}
 
+	//prints out all the cars in the list
 	public static void seeAllCars() {
-		carDatabase.printAllCarsFromDatabase();
+		carDatabase.printAllCarsFromFile();
 	}
 
 }

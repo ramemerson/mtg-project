@@ -2,7 +2,6 @@ package carinfos;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
-import java.io.Console;
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
@@ -12,7 +11,15 @@ import java.nio.file.Paths;
 
 public class CarDatabase {
 
-	private static String carDatabaseFilePath = "src/CarDealership.txt";
+	private static String carDatabaseFilePath = "src/CarDealership.csv";
+
+	public static String getCarDatabaseFilePath() {
+		return carDatabaseFilePath;
+	}
+
+	public static void setCarDatabaseFilePath(String carDatabaseFilePath) {
+		CarDatabase.carDatabaseFilePath = carDatabaseFilePath;
+	}
 
 	// creates a new instance of the car class and checks if that car is already in
 	// the file, if not it creates a new car

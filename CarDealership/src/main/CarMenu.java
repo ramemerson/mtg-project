@@ -1,5 +1,8 @@
 package main;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 import java.util.concurrent.TimeUnit;
@@ -97,7 +100,7 @@ public class CarMenu {
 
 	}
 
-	//menu prompt to let you add cars to the car list
+	// menu prompt to let you add cars to the car list
 	public static void addCarToDatabase() {
 		try {
 			Scanner scanner = new Scanner(System.in);
@@ -145,15 +148,25 @@ public class CarMenu {
 		}
 	}
 
-	//search for a cared based on its ID
+	// search for a cared based on its ID
 	public static void seeDetailsOfACar() {
 		try (Scanner scanner = new Scanner(System.in)) {
 			boolean trueCheck = true;
 			while (trueCheck == true) {
 				System.out.println("Enter the car ID of the car details you want to see:");
 				String scannerID = scanner.next();
+				String line;
+				String fmt = "%1$10s %2$20s %3$20s %4$20s %5$20s %6$20s %7$20s";
 				if (carDatabase.findCarInDatabase(scannerID).length() != 0) {
-					System.out.println(carDatabase.findCarInDatabase(scannerID));				
+					line = carDatabase.findCarInDatabase(scannerID);
+					String[] valuesOfCarInLine = line.split(",");
+					String[] header = "CarID,Car Brand,Car Model,Horse Power,Max Speed,Tank Max Capacity,Usage l/100km".split(",");
+					String outputHeader = String.format(fmt, header[0], header[1], header[2],
+							header[3], header[4], header[5], header[6]);
+					String output = String.format(fmt, valuesOfCarInLine[0], valuesOfCarInLine[1], valuesOfCarInLine[2],
+							valuesOfCarInLine[3], valuesOfCarInLine[4], valuesOfCarInLine[5], valuesOfCarInLine[6]);
+					System.out.println(outputHeader);
+					System.out.println(output);
 					firstSelectionMenu();
 				} else if (carDatabase.findCarInDatabase(scannerID).length() == 0) {
 					System.out.println("car not found!\n[1] Search again\n[2] See list of all cars");
@@ -165,16 +178,14 @@ public class CarMenu {
 						firstSelectionMenu();
 					}
 				}
-			
 			}
 			trueCheck = false;
 		} catch (InputMismatchException e) {
 			System.out.println("wrong input, please input a number!");
 		}
-
 	}
 
-	//prints out all the cars in the list
+	// prints out all the cars in the list
 	public static void seeAllCars() {
 		carDatabase.printAllCarsFromFile();
 	}

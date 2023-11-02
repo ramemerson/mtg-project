@@ -6,7 +6,6 @@ public class Main {
 		
 		CarMenu.dealershipWelcomeText();
 		CarMenu.firstSelectionMenu();
-
 		
 		// format the output of all the cars so that its right under the header text for that detail
 	}

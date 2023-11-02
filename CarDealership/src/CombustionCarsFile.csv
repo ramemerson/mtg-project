@@ -1,4 +1,4 @@
-# CarID, Car Brand, Car Model, Horse Power, Max Speed, Tank Max Capacity, Usage l/100km
+# CarID, Car Brand, Car Model, Horse Power, Max Speed, Tank Max-Capacity, Gas Usage l/100km
 Audi1,Audi,A8,250,300,100,10
 Volvo1,Volvo,XC60,220,280,150,25
 VW1,Volkswagen,Golf,130,180,80,18

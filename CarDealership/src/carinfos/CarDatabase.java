@@ -8,6 +8,8 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
 
 public class CarDatabase {
 
@@ -150,6 +152,69 @@ public class CarDatabase {
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
+		}
+	}
+	
+	//see if a car is in the file already and if yes remove it 
+	public void removeCombustionCar(String carID)  {
+		List<String> lines = new ArrayList<>();
+		boolean carFound = false;
+		try (BufferedReader reader = new BufferedReader(new FileReader(combustionCarFilePath))) {
+			String line;
+			while ((line = reader.readLine()) != null) {
+				if (line.startsWith(carID + ",") || line.startsWith(carID.toLowerCase() + ",")) {
+					carFound = true;
+				} else {
+					lines.add(line);
+				}
+			}
+		} catch (IOException e) {
+			System.err.println("An error occurred while deleting the car: " + e.getMessage());
+		}
+
+		if (carFound) {
+			try (BufferedWriter writer = new BufferedWriter(new FileWriter(combustionCarFilePath))) {
+				for (String line : lines) {
+					writer.write(line);
+					writer.newLine();
+				}
+				System.out.println("CAR DELETED!");
+			} catch (IOException e) {
+				System.err.println("An error occurred while writing to the car: " + e.getMessage());
+			}
+		} else {
+			System.out.println("Car not found in the file.");
+		}
+	}
+	
+	public void removeElectricCar(String carID)  {
+		List<String> lines = new ArrayList<>();
+		boolean carFound = false;
+		try (BufferedReader reader = new BufferedReader(new FileReader(electricCarFilePath))) {
+			String line;
+			while ((line = reader.readLine()) != null) {
+				if (line.startsWith(carID + ",") || line.startsWith(carID.toLowerCase() + ",")) {
+					carFound = true;
+				} else {
+					lines.add(line);
+				}
+			}
+		} catch (IOException e) {
+			System.err.println("An error occurred while deleting the car: " + e.getMessage());
+		}
+
+		if (carFound) {
+			try (BufferedWriter writer = new BufferedWriter(new FileWriter(electricCarFilePath))) {
+				for (String line : lines) {
+					writer.write(line);
+					writer.newLine();
+				}
+				System.out.println("CAR DELETED!");
+			} catch (IOException e) {
+				System.err.println("An error occurred while writing to the car: " + e.getMessage());
+			}
+		} else {
+			System.out.println("Car not found in the file.");
 		}
 	}
 

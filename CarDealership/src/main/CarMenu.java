@@ -70,7 +70,8 @@ public class CarMenu {
 	// the first menu where you can select what you want to do/see
 	public static void firstSelectionMenu() throws InputMismatchException {
 		try {
-			System.out.println("\n[1] Add car to the database\n[2] See details of a car\n[3] See all cars in database");
+			System.out.println(
+					"\n[1] Add car to the database\n[2] See details of a car\n[3] See all cars in database\n[4] Remove cars");
 			Scanner scanner = new Scanner(System.in);
 			int userSelection = scanner.nextInt();
 			boolean trueCheck = true;
@@ -89,6 +90,14 @@ public class CarMenu {
 					CarMenu.combustionOrElectricMenu();
 					trueCheck = false;
 					firstSelectionMenu();
+				} else if (userSelection == 4) {
+					System.out.println("\nRemove [1] Gas [2] Electric car");
+					int selection = scanner.nextInt();
+					if (selection == 1) {
+						CarMenu.removeCombustioncar();
+					} else if (selection == 2) {
+						CarMenu.removeElectricCar();
+					}
 				} else {
 					System.out.println("Please input a number from the menu above!");
 					trueCheck = false;
@@ -194,7 +203,8 @@ public class CarMenu {
 					System.out.println("[1] yes [2] no");
 					int scannerCheck1Or2 = scanner.nextInt();
 					if (scannerCheck1Or2 == 1) {
-						carDatabase.createNewElectricCar(scannerID, scannerBrand, scannerModel, scannerHP, scannerMaxSpeed, scannerBatteryCapacity, scannerBatteryUsage);
+						carDatabase.createNewElectricCar(scannerID, scannerBrand, scannerModel, scannerHP,
+								scannerMaxSpeed, scannerBatteryCapacity, scannerBatteryUsage);
 						CarMenu.firstSelectionMenu();
 					} else {
 						System.out.println("\n[1] Input information again [2] Go back to main menu ");
@@ -249,10 +259,11 @@ public class CarMenu {
 			}
 			trueCheck = false;
 		} catch (InputMismatchException e) {
-			System.out.println("wrong input, please input a number!");
+			System.out.println("wrong input, please input a car ID!");
+			seeDetailsOfElectricCar();
 		}
 	}
-	
+
 	public static void seeDetailsOfCombustionCar() {
 		try (Scanner scanner = new Scanner(System.in)) {
 			boolean trueCheck = true;
@@ -286,7 +297,40 @@ public class CarMenu {
 			}
 			trueCheck = false;
 		} catch (InputMismatchException e) {
-			System.out.println("wrong input, please input a number!");
+			System.out.println("wrong input, please input a car ID!");
+			seeDetailsOfCombustionCar();
+		}
+	}
+
+	public static void removeCombustioncar() {
+		try (Scanner scanner = new Scanner(System.in)){
+			boolean trueCheck = true;
+			while (trueCheck == true) {
+				System.out.println("Enter the car ID of the car you want to remove:");
+				String scannerID = scanner.next();
+				carDatabase.removeCombustionCar(scannerID);
+				firstSelectionMenu();
+			}
+			trueCheck = false;
+		} catch (InputMismatchException e) {
+			System.out.println("wrong input, please input a car ID!");
+			removeCombustioncar();
+		}
+	}
+
+	public static void removeElectricCar() {
+		try (Scanner scanner = new Scanner(System.in)){
+			boolean trueCheck = true;
+			while (trueCheck == true) {
+				System.out.println("Enter the car ID of the car you want to remove:");
+				String scannerID = scanner.next();
+				carDatabase.removeElectricCar(scannerID);
+				firstSelectionMenu();
+			}
+			trueCheck = false;
+		} catch (InputMismatchException e) {
+			System.out.println("wrong input, please input a car ID!");
+			removeElectricCar();
 		}
 	}
 }

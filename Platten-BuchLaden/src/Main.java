@@ -1,18 +1,14 @@
+import java.io.IOException;
 
 public class Main {
 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws IOException {
 		
-		//Main functions	
-//		CreateMediaTypes.createNewMediaTypeFile("Vinyls");
-//		CreateMediaTypes.createNewMediaTypeFile("Animes");
-//		CreateMediaTypes.createNewMediaTypeFile("Games");
-//		CreateMediaTypes.createNewMediaTypeFile("CDs");
-		
-		CreateMediaTypes.createMediaItems("Anime1", "Animes", "Naruto", "Idunnowhomadeit", 60);
-		
-		System.out.println(CreateMediaTypes.returnListOfAllExistingMediaTypes());
-
+//		Menus.welcomeMenu();
+//		Menus.firstSelectionMenu();
+//		Validation.validateLetter("a");
+		Validation.validateNumber("a");
+	
 	}
 
 }

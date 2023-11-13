@@ -6,7 +6,7 @@ public class Main {
 		
 //		Menus.welcomeMenu();
 //		Menus.firstSelectionMenu();
-//		Validation.validateLetter("a");
+		Validation.validateLetter(1);
 		Validation.validateNumber("a");
 	
 	}

@@ -11,8 +11,8 @@ public class Validation {
 		}
 	}
 	
-	public static void validateLetter(Character letter) {
-		if (Character.isLetter(letter)) {
+	public static void validateLetter(letter) {
+		if (Character.isLetterOrDigit(letter)) {
 //			return true;
 			System.out.println("True");
 		} else {

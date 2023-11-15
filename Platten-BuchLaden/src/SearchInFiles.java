@@ -9,6 +9,7 @@ public class SearchInFiles {
 	private static File filePath = new File("C:\\Dev\\test_files\\Plattenhaus");
 	
 	public static String printById(String id) throws IOException {
+		
 		for (File files : filePath.listFiles()) {
 			if (files.isDirectory()) {
 				return files.toString();
@@ -43,7 +44,7 @@ public class SearchInFiles {
 				try (BufferedReader br = new BufferedReader(new FileReader(files))) {
 					String foundLine;
 					while ((foundLine = br.readLine()) != null) {
-						if (foundLine.contains(title)) {
+						if (foundLine.contains(title.toLowerCase()) || foundLine.toLowerCase().contains(title.toLowerCase())) {
 							lines.add(foundLine);
 						}
 					}
@@ -69,7 +70,7 @@ public class SearchInFiles {
 				try (BufferedReader br = new BufferedReader(new FileReader(files))) {
 					String foundLine;
 					while ((foundLine = br.readLine()) != null) {
-						if (foundLine.contains(artistName)) {
+						if (foundLine.contains(artistName.toLowerCase()) || foundLine.toLowerCase().contains(artistName.toLowerCase())) {
 							lines.add(foundLine);
 						}
 					}

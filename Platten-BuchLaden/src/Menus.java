@@ -169,11 +169,12 @@ public class Menus {
 		try {
 			Scanner scanner = new Scanner(System.in);
 			int selection = scanner.nextInt();
+			scanner.nextLine();
 			if (TypeValidation.validateNumber(selection) == true) {
 				switch (selection) {
 				case 1:
 					System.out.println("Input artist to search by:");
-					String artistToSearch = scanner.next();
+					String artistToSearch = scanner.nextLine();
 					if (TypeValidation.validateLetter(artistToSearch) == true) {
 						SearchInFiles.printItemsByArtist(artistToSearch);
 						firstSelectionMenu();
@@ -184,7 +185,7 @@ public class Menus {
 					break;
 				case 2:
 					System.out.println("Input a title to search for:");
-					String titleToSearch = scanner.next();
+					String titleToSearch = scanner.nextLine();
 					if (TypeValidation.validateLetter(titleToSearch) == true) {
 						SearchInFiles.printItemByTitle(titleToSearch);
 						firstSelectionMenu();
@@ -195,7 +196,7 @@ public class Menus {
 					break;
 				case 3:
 					System.out.println("Input an ID to search for:");
-					String idToSearch = scanner.next();
+					String idToSearch = scanner.nextLine();
 					if (TypeValidation.validateLetter(idToSearch) == true) {
 						SearchInFiles.printById(idToSearch);
 						firstSelectionMenu();

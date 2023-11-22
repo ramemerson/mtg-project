@@ -1,5 +1,7 @@
+import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -8,6 +10,7 @@ import java.util.List;
 public class CreateMedias {
 
 	private static String filePath = "C:\\Dev\\test_files\\Plattenhaus";
+	private static File allFiles = new File("C:\\Dev\\test_files\\Plattenhaus");
 
 	public static void createNewMediaTypeFile(String typeOfMedium) {
 
@@ -79,6 +82,20 @@ public class CreateMedias {
 			}
 		}
 		return null;
+	}
+	
+	public static void printAllContentFromMedia(String mediaType) throws IOException {
+		for (File file : allFiles.listFiles()) {
+			if (mediaType.toLowerCase().equalsIgnoreCase(file.getName())) {
+				try (BufferedReader br = new BufferedReader(new FileReader(file))) {
+					String hasLine;
+					while ((hasLine = br.readLine()) != null) {
+						System.out.println(hasLine);
+					}
+				
+				}
+			}
+		}
 	}
 	
 }

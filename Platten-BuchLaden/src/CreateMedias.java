@@ -4,6 +4,9 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -83,19 +86,24 @@ public class CreateMedias {
 		}
 		return null;
 	}
-	
-	public static void printAllContentFromMedia(String mediaType) throws IOException {
+
+	public static String printAllContentFromMedia(String mediaType) throws IOException {
 		for (File file : allFiles.listFiles()) {
-			if (mediaType.toLowerCase().equalsIgnoreCase(file.getName())) {
+			String fileName = file.getName().replace(".csv", "");
+			if (fileName.toLowerCase().equals(mediaType.toLowerCase())) {
 				try (BufferedReader br = new BufferedReader(new FileReader(file))) {
-					String hasLine;
-					while ((hasLine = br.readLine()) != null) {
-						System.out.println(hasLine);
+					String line;
+					String fmt = "%1$10s %2$20s %3$20s %4$20s %5$20s";
+					while ((line = br.readLine()) != null) {
+						String[] valuesOfCarInLine = line.split(",");
+						String output = String.format(fmt, valuesOfCarInLine[0], valuesOfCarInLine[1], valuesOfCarInLine[2],
+								valuesOfCarInLine[3], valuesOfCarInLine[4]);
+						System.out.println(output);
 					}
-				
 				}
-			}
+			}	
 		}
+		return mediaType;
 	}
-	
+
 }

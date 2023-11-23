@@ -1,4 +1,5 @@
 import java.io.IOException;
+import java.util.InputMismatchException;
 import java.util.NoSuchElementException;
 import java.util.Scanner;
 
@@ -16,7 +17,7 @@ public class Menus {
 	public static void firstSelectionMenu() throws IOException {
 		System.out.println("");
 		System.out.println("Select a function from below:");
-		System.out.println("[1] Add media types\n[2] Add media\n[3] See all different media types\n[4] Search\n");
+		System.out.println("[1] Add media types\n[2] Add media\n[3] See all media types\n[4] Search\n");
 			try {
 				Scanner scanner = new Scanner(System.in);
 				int selection = scanner.nextInt();
@@ -161,6 +162,10 @@ public class Menus {
 	
 	public static void seeAllMediaTypes() throws IOException {
 		System.out.println(CreateMedias.returnListOfAllExistingMediaTypes());
+		System.out.println("input a media type to see its contents:");
+		Scanner scanner = new Scanner(System.in);
+		String input = scanner.next();
+		CreateMedias.printAllContentFromMedia(input);
 		firstSelectionMenu();
 	}
 	

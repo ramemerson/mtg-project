@@ -1,3 +1,4 @@
+package com.gft.training.medienhaus.validate;
 
 public class TypeValidation {
 

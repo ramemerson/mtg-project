@@ -1,3 +1,4 @@
+package com.gft.training.medienhaus.data;
 
 public class Mediums {
 

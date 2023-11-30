@@ -1,9 +1,14 @@
+package com.gft.training.medienhaus.ui;
 import java.io.IOException;
 import java.util.InputMismatchException;
 import java.util.NoSuchElementException;
 import java.util.Scanner;
 
 import javax.swing.plaf.synth.SynthOptionPaneUI;
+
+import com.gft.training.medienhaus.data.CreateMedias;
+import com.gft.training.medienhaus.data.ReadFiles;
+import com.gft.training.medienhaus.validate.TypeValidation;
 
 public class Menus {
 	
@@ -181,7 +186,7 @@ public class Menus {
 					System.out.println("Input artist to search by:");
 					String artistToSearch = scanner.nextLine();
 					if (TypeValidation.validateLetter(artistToSearch) == true) {
-						SearchInFiles.printItemsByArtist(artistToSearch);
+						ReadFiles.printItemsByArtist(artistToSearch);
 						firstSelectionMenu();
 					} else {
 						System.out.println("wrong type of input, please try that again");
@@ -192,7 +197,7 @@ public class Menus {
 					System.out.println("Input a title to search for:");
 					String titleToSearch = scanner.nextLine();
 					if (TypeValidation.validateLetter(titleToSearch) == true) {
-						SearchInFiles.printItemByTitle(titleToSearch);
+						ReadFiles.printItemByTitle(titleToSearch);
 						firstSelectionMenu();
 					} else {
 						System.out.println("wrong type of input, please try that again");
@@ -203,7 +208,7 @@ public class Menus {
 					System.out.println("Input an ID to search for:");
 					String idToSearch = scanner.nextLine();
 					if (TypeValidation.validateLetter(idToSearch) == true) {
-						SearchInFiles.printById(idToSearch);
+						ReadFiles.printById(idToSearch);
 						firstSelectionMenu();
 					} else {
 						System.out.println("wrong type of input, please try that again");

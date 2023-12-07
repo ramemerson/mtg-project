@@ -14,20 +14,7 @@ import com.gft.training.medienhaus.validate.TypeValidation;
 
 public class Menus {
 	
-	Comparator<Mediums> highToLowComparator = (o1, o2) -> {
-		if (o1.getPrice() < o2.getPrice()) {
-			return 1;
-		}
-		if (o1.getPrice() > o2.getPrice()) {
-			return -1;
-		}
-		return 0;
-	};
-	
-	
-	
-	
-	public static void welcomeMenu() throws IOException {
+	public static void welcomeMenu(Comparator<Mediums> highToLowComparator) throws IOException {
 		System.out.println("------------------------------------");
 		System.out.println("Welcome to the multimedia database");
 		System.out.println("------------------------------------");
@@ -36,8 +23,11 @@ public class Menus {
 		CSVReader.readFileAndCreateProductArrayList("Movie");
 		System.out.println("unsorted");
 		
-		ArrayList<Mediums> listToSort = CSVReader.readFileAndCreateProductArrayList("Movie");
-		System.out.println(listToSort.sort(high));
+		CSVReader reader = new CSVReader();
+		
+		ArrayList<Mediums> listToSort = reader.readFileAndCreateProductArrayList("Movie");
+		listToSort.sort(highToLowComparator);
+		System.out.println(listToSort);
 		
 		
 	}

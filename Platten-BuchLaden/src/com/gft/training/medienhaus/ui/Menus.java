@@ -7,7 +7,9 @@ import java.util.Scanner;
 import javax.swing.plaf.synth.SynthOptionPaneUI;
 
 import com.gft.training.medienhaus.data.CreateMedias;
+import com.gft.training.medienhaus.data.PrintData;
 import com.gft.training.medienhaus.data.ReadFiles;
+import com.gft.training.medienhaus.io.CSVReader;
 import com.gft.training.medienhaus.validate.TypeValidation;
 
 public class Menus {
@@ -41,21 +43,21 @@ public class Menus {
 						searchMenu();
 						break;
 					default:
-						System.out.println("wrong input, please try again\n");
+						System.err.println("wrong input, please try again\n");
 						firstSelectionMenu();
 						break;
 					}
 				}
 				
 			} catch (NoSuchElementException e) {
-				System.out.println("wrong input, please try again\n");
+				System.err.println("wrong input, please try again\n");
 				firstSelectionMenu();
 			}
 		}
 	
 	public static void addMediaTypeMenu() throws IOException {
 		System.out.println("First check if the media type already exists:");
-		System.out.println(CreateMedias.returnListOfAllExistingMediaTypes());
+		System.out.println(CreateMedias.returnListOfAllFilesInFolder());
 		System.out.println("\nWould you like to add a new media type? [1] yes [2] no");	
 		try {
 			Scanner scanner = new Scanner(System.in);
@@ -74,12 +76,12 @@ public class Menus {
 					firstSelectionMenu();
 					break;
 				default:
-					System.out.println("wrong input, please try again\n");
+					System.err.println("wrong input, please try again\n");
 					break;
 				}
 			}	
 		} catch (NoSuchElementException e) {
-			System.out.println("wrong input, please try again\n");
+			System.err.println("wrong input, please try again\n");
 			addMediaMenu();
 		}
 		
@@ -153,24 +155,24 @@ public class Menus {
 					}
 					break;
 				default:
-					System.out.println("wrong input");
+					System.err.println("wrong input");
 					firstSelectionMenu();
 					break;
 				}
 			}
 		} catch (NoSuchElementException e) {
-			System.out.println("wrong input, please try again\n");
+			System.err.println("wrong input, please try again\n");
 			addMediaMenu();
 		}
 		
 	}
 	
 	public static void seeAllMediaTypes() throws IOException {
-		System.out.println(CreateMedias.returnListOfAllExistingMediaTypes());
+		System.out.println(CSVReader.returnListOfAllFilesInFolder());
 		System.out.println("input a media type to see its contents:");
 		Scanner scanner = new Scanner(System.in);
 		String input = scanner.next();
-		CreateMedias.printAllContentFromMedia(input);
+		PrintData.printAllContentFromMedia(input);
 		firstSelectionMenu();
 	}
 	
@@ -186,10 +188,10 @@ public class Menus {
 					System.out.println("Input artist to search by:");
 					String artistToSearch = scanner.nextLine();
 					if (TypeValidation.validateLetter(artistToSearch) == true) {
-						ReadFiles.printItemsByArtist(artistToSearch);
+						PrintData.searchInFiles(null, artistToSearch, null);
 						firstSelectionMenu();
 					} else {
-						System.out.println("wrong type of input, please try that again");
+						System.err.println("wrong type of input, please try that again");
 						searchMenu();
 					}
 					break;
@@ -197,10 +199,10 @@ public class Menus {
 					System.out.println("Input a title to search for:");
 					String titleToSearch = scanner.nextLine();
 					if (TypeValidation.validateLetter(titleToSearch) == true) {
-						ReadFiles.printItemByTitle(titleToSearch);
+						PrintData.searchInFiles(null, null, titleToSearch);
 						firstSelectionMenu();
 					} else {
-						System.out.println("wrong type of input, please try that again");
+						System.err.println("wrong type of input, please try that again");
 						searchMenu();
 					}
 					break;
@@ -208,20 +210,20 @@ public class Menus {
 					System.out.println("Input an ID to search for:");
 					String idToSearch = scanner.nextLine();
 					if (TypeValidation.validateLetter(idToSearch) == true) {
-						ReadFiles.printById(idToSearch);
+						PrintData.searchInFiles(idToSearch, null, null);
 						firstSelectionMenu();
 					} else {
-						System.out.println("wrong type of input, please try that again");
+						System.err.println("wrong type of input, please try that again");
 						searchMenu();
 					}
 					break;
 				default:
-					System.out.println("wrong input, please try again\n");
+					System.err.println("wrong input, please try again\n");
 					break;
 				}
 			}	
 		} catch (NoSuchElementException e) {
-			System.out.println("wrong input, please try again\n");
+			System.err.println("wrong input, please try again\n");
 			searchMenu();
 		}
 		

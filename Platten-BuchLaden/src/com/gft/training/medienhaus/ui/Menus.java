@@ -1,24 +1,45 @@
 package com.gft.training.medienhaus.ui;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.InputMismatchException;
 import java.util.NoSuchElementException;
 import java.util.Scanner;
 
 import javax.swing.plaf.synth.SynthOptionPaneUI;
 
-import com.gft.training.medienhaus.data.CreateMedias;
-import com.gft.training.medienhaus.data.PrintData;
-import com.gft.training.medienhaus.data.ReadFiles;
+import com.gft.training.medienhaus.data.Mediums;
 import com.gft.training.medienhaus.io.CSVReader;
 import com.gft.training.medienhaus.validate.TypeValidation;
 
 public class Menus {
 	
-	public static void welcomeMenu() {
+	Comparator<Mediums> highToLowComparator = (o1, o2) -> {
+		if (o1.getPrice() < o2.getPrice()) {
+			return 1;
+		}
+		if (o1.getPrice() > o2.getPrice()) {
+			return -1;
+		}
+		return 0;
+	};
+	
+	
+	
+	
+	public static void welcomeMenu() throws IOException {
 		System.out.println("------------------------------------");
 		System.out.println("Welcome to the multimedia database");
 		System.out.println("------------------------------------");
 		System.out.println("");
+		
+		CSVReader.readFileAndCreateProductArrayList("Movie");
+		System.out.println("unsorted");
+		
+		ArrayList<Mediums> listToSort = CSVReader.readFileAndCreateProductArrayList("Movie");
+		System.out.println(listToSort.sort(high));
+		
+		
 	}
 	
 	public static void firstSelectionMenu() throws IOException {
@@ -226,6 +247,5 @@ public class Menus {
 			System.err.println("wrong input, please try again\n");
 			searchMenu();
 		}
-		
 	}
 }

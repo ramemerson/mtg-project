@@ -11,7 +11,7 @@ import com.gft.training.medienhaus.validate.FileValidation;
 public class CSVWriter {
 	
 	public static Mediums createMediaItems(String IdNumber, String typeOfMedium, String titleOfMedium, String artist,
-			int price) {
+			double price) {
 		List<String> allFileNames = CSVReader.returnListOfAllFilesInFolder();
 
 		if (!allFileNames.contains(typeOfMedium)) {

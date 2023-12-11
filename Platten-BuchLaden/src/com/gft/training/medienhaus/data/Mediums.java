@@ -6,7 +6,7 @@ public class Mediums {
 	private String typeOfMedium;
 	private String titleOfMedium;
 	private String artist;
-	private double price;
+	private Double price;
 
 	public Mediums(String IdNumber, String typeOfMedium, String titleOfMedium, String artist, double price) {
 		this.IdNumber = IdNumber;
@@ -52,11 +52,11 @@ public class Mediums {
 		this.artist = artist;
 	}
 
-	public double getPrice() {
+	public Double getPrice() {
 		return price;
 	}
 
-	public void setPrice(int price) {
+	public void setPrice(Double price) {
 		this.price = price;
 	}
 

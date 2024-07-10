@@ -1,0 +1,25 @@
+<html>
+    <head>
+        <link th:href="@{/css/login-stylesheet.css}" rel="stylesheet">
+    </head>
+    <body>
+       <div class="container-box"> 
+        <h2>Magic the Gathering: <br> Trading Platform</h2>
+        <div id="hideMe" class="alert failed" th:if="${status} == 'failed'">
+            <strong>User not found!</strong>
+        </div>
+        <div id="hideMe" class="alert failed" th:if="${status} == 'nameOrPasswordWrong'">
+            <strong>Username or Password wrong!</strong>
+        </div>
+        <div id="hideMe" class="alert failed" th:if="${status} == 'userexists'">
+            <strong>User is already in the system, please try logging in!</strong>
+        </div>
+        <form method="post" th:action="@{/startup/login}">
+            <input type="submit" value="Login">
+        </form>
+        <form method="post" th:action="@{/startup/register}">
+            <input type="submit" value="Register">
+        </form>
+       </div>
+    </body>
+</html>

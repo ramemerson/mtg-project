@@ -1,0 +1,46 @@
+<html>
+
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link th:href="@{/css/browse-stylesheet.css}" rel="stylesheet">
+</head>
+
+<body>
+    <div class="topnav">
+        <a th:href="@{/main/}">Home</a>
+        <a class="active" th:href="@{/browse/}">Browse</a>
+        <a th:href="@{/trade/}">Trade</a>
+        <div class="topnav-right">
+            <a th:href="@{/account/}" >Account</a>
+            <a th:href="@{/startup/logout}">Logout</a>
+        </div>
+    </div>
+
+    <div class="container-box">
+        <div id="searchContainer">
+            <input type="text" id="searchInput" placeholder="Search by name...">
+            <button id="searchButton">Search</button>
+        </div>
+            <table id="cardTable">
+                <thead>
+                    <tr>
+                        <th>Image</th>
+                        <th>Name</th>
+                        <th>Price</th>
+                        <th>Rarity</th>
+                        <th>Released</th>
+                        <th>Type</th>
+                        <th>Info</th>
+                    </tr>
+                </thead>
+                <tbody id="cardContainer"></tbody>
+            </table>
+            <div id="paginationContainer" class="pagination"></div>
+        
+       
+    </div>
+    
+    <script th:src="@{/javascript/browse.js}"></script>
+</body>
+
+</html>

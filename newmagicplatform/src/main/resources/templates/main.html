@@ -1,0 +1,34 @@
+<html>
+
+<head>
+    <link th:href="@{/css/main-stylesheet.css}" rel="stylesheet">
+</head>
+
+<body>
+    <div class="topnav">
+        <strong class="alert success" th:if="${status} == 'user created'">New user created!</strong>
+        <a class="active" th:href="@{/main/}">Home</a>
+        <a th:href="@{/browse/}">Browse</a>
+        <a th:href="@{/trade/}">Trade</a>
+        <div class="topnav-right">
+            <a th:href="@{/account/}">Account</a>
+            <a th:href="@{/startup/logout}">Logout</a>
+        </div>
+    </div>
+    <div class="container-box" th:object="${user}">
+        <h3>
+            Welcome <span th:text="${user.firstname}"></span> <br> to the 'Magic the Gathering' trading platform
+        </h3>
+        <h4> - Here you are able to - </h4>
+        <h4> Browse cards </h4>
+        <h4> Create decks </h4>
+        <h4> Trade cards and decks with other users </h4>
+        <h4> Buy/sell cards and decks with other users</h4>
+        <h4> Check current card prices </h4>
+        <h4> ...more to come with time </h4>
+    </div>
+
+
+</body>
+
+</html>

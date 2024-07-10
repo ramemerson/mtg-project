@@ -1,0 +1,54 @@
+<html>
+
+<head>
+    <link th:href="@{/css/accountpage-stylesheet.css}" rel="stylesheet">
+</head>
+
+<body>
+    <div class="topnav">
+        <a th:href="@{/main/}">Home</a>
+        <a th:href="@{/browse/}">Browse</a>
+        <a th:href="@{/trade/}">Trade</a>
+        <div class="topnav-right">
+            <a th:href="@{/account/}" class="active">Account</a>
+            <a th:href="@{/startup/logout}">Logout</a>
+        </div>
+
+    </div>
+    <div class="container-box" th:object="${user}">
+        <h3>Account details</h3>
+        <div class="heading">
+            <h4>Name: </h4>
+            <h5 th:text="${user.firstname}"></h5>
+        </div>
+        <div class="heading">
+            <h4>Surname: </h4>
+            <h5 th:text="${user.lastname}"></h5>
+        </div>
+        <div class="heading">
+            <h4>Username:</h4>
+            <h5 th:text="${user.username}"></h5>
+        </div>
+        <div class="heading">
+            <h4>Birthday: </h4>
+            <h5 th:text="${#dates.format(user.birthday, 'yyyy-MM-dd')}"></h5>
+        </div>
+        <div class="heading">
+            <h4>Email: </h4>
+            <h5 th:text="${user.email}"></h5>
+        </div>
+        <div class="heading">
+            <h4>Budget (€): </h4>
+            <h5 th:text="${user.wallet.budget}"></h5>
+        </div>
+        <div class="heading">
+            <h4>Trade History: </h4>
+            
+        </div>
+        <form method="post" th:action="@{/startup/register}">
+            <input type="submit" value="Update">
+        </form>
+    </div>
+</body>
+
+</html>

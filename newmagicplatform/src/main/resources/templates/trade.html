@@ -1,0 +1,74 @@
+<html>
+
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link th:href="@{/css/trade-stylesheet.css}" rel="stylesheet">
+</head>
+
+<body>
+    <div class="topnav">
+        <a th:href="@{/main/}">Home</a>
+        <a th:href="@{/browse/}">Browse</a>
+        <a class="active" href="@{/trade/}">Trade</a>
+        <div class="topnav-right">
+            <a th:href="@{/account/}">Account</a>
+            <a th:href="@{/startup/logout}">Logout</a>
+        </div>
+    </div>
+
+    <div class="container-box">
+        <div class="row">
+            <div class="column left">
+                <h3>Inventory</h3>
+                <div class="row" th:if="${not #lists.isEmpty(cards)}">
+                    <div class="cardColumn" th:each="card: ${cards}"
+                        th:attr="data-card-id=${card.id}, data-card-name=${card.name}, data-card-image-url=${card.image_uris.small}, data-price=${card.prices.eur}, data-rarity=${card.rarity}"
+                        onclick="selectCardLeft(this)">
+                        <img th:src="${card.image_uris.small}" alt="Card Image">
+                    </div>
+                </div>
+            </div>
+            <div class="column middle">
+                <h3>Selected Trade</h3>
+                <div class="row">
+                    <div id="selectedCardAreaLeft">
+
+                    </div>
+                    <div class="column middle">
+
+                    </div>
+                    <div id="selectedCardAreaRight">
+
+                    </div>
+                </div>
+
+            </div>
+            <div class="column right">
+                <h3>Trade with:</h3>
+                <div id="userList">
+                    <div class="row" th:if="${not #lists.isEmpty(allUsers)}">
+                        <div class="userBox" th:each="user: ${allUsers}" th:attr="data-user-id=${user.id}"
+                            onclick="selectUser(this)">
+                            <h6 th:text="${user.username}"></h6>
+                        </div>
+                    </div>
+                </div>
+                <div id="userCardsContainer" style="display: none;">
+                    <div class="buttonContainer">
+                        <button id="backButton" onclick="backToUserList()">Back to User List</button>
+                    </div>
+                    <h3 id="selectedUserName"></h3>
+                    <div id="userCardsArea">
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    
+    <script th:src="@{/javascript/trade.js}"></script>
+</body>
+
+
+</html>

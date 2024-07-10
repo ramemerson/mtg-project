@@ -1,0 +1,19 @@
+<html>
+    <head>
+        <link th:href="@{/css/login-stylesheet.css}" rel="stylesheet">
+    </head>
+    <body>    
+        <div class="container-box">
+            <h2>Magic the Gathering: <br> Trading Platform</h2>
+            <form method="post" th:object="${account}" th:action="@{/startup/register/attempt}">
+                <input type="text" placeholder="Firstname" th:field="*{firstname}" required>
+                <input type="text" placeholder="Lastname" th:field="*{lastname}" required>
+                <input type="text" placeholder="Username" th:field="*{username}" required>
+                <input type="text" placeholder="Email" th:field="*{email}" required>
+                <input type="date" placeholder="Birthday" th:field="*{birthday}" required>
+                <input type="password" placeholder="Password" th:field="*{password}" required>
+                <input type="submit" value="Register">
+            </form>
+        </div>
+    </body>
+</html>

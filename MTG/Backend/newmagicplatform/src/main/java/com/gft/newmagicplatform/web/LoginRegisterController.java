@@ -6,7 +6,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.gft.newmagicplatform.entity.Account;
 import com.gft.newmagicplatform.entity.Wallet;
-import com.gft.newmagicplatform.login.LoginResponse;
 import com.gft.newmagicplatform.service.AccountServiceImpl;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -37,31 +36,35 @@ public class LoginRegisterController {
         return "login";
     }
 
-    @PostMapping("login/attempt")
-    public String loginAttempt(Account account, RedirectAttributes ra, HttpServletRequest request) {
-        String status = "failed";
-        if (accountServiceImpl.checkUsernamePassword(account.getUsername(), account.getPassword())
-                .equals("usernameAndPasswordCorrect")) {
-            status = "success";
-            HttpSession session = request.getSession();
-            session.setAttribute("user", accountServiceImpl.getAcountByUsername(account.getUsername()));
-            ra.addFlashAttribute("status", status);
-            return "redirect:/main/";
-        } else if (accountServiceImpl.checkUsernamePassword(account.getUsername(), account.getPassword())
-                .equals("usernameCorrectPasswordWrong")) {
-            status = "nameOrPasswordWrong";
-            ra.addFlashAttribute("status", status);
-            return "redirect:/startup/";
-        }
-        ra.addFlashAttribute("status", status);
-        return "redirect:/startup/";
-    }
+    // @PostMapping("login/attempt")
+    // public String loginAttempt(Account account, RedirectAttributes ra,
+    // HttpServletRequest request) {
+    // String status = "failed";
+    // if (accountServiceImpl.checkUsernamePassword(account.getUsername(),
+    // account.getPassword())
+    // .equals("usernameAndPasswordCorrect")) {
+    // status = "success";
+    // HttpSession session = request.getSession();
+    // session.setAttribute("user",
+    // accountServiceImpl.getAcountByUsername(account.getUsername()));
+    // ra.addFlashAttribute("status", status);
+    // return "redirect:/main/";
+    // } else if (accountServiceImpl.checkUsernamePassword(account.getUsername(),
+    // account.getPassword())
+    // .equals("usernameCorrectPasswordWrong")) {
+    // status = "nameOrPasswordWrong";
+    // ra.addFlashAttribute("status", status);
+    // return "redirect:/startup/";
+    // }
+    // ra.addFlashAttribute("status", status);
+    // return "redirect:/startup/";
+    // }
 
-    @GetMapping("/loginattempt")
-    public LoginResponse authenticate(String username, String password) {
-        
-        return new LoginResponse();
-    }
+    // @GetMapping("/loginattempt")
+    // public LoginResponse authenticate(String username, String password) {
+
+    // return new LoginResponse();
+    // }
 
     @PostMapping("register")
     public String getRegisterPage(Model model) {

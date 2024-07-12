@@ -61,7 +61,6 @@ public class LoginRegisterController {
     public LoginResponse authenticate(String username, String password) {
         
         return new LoginResponse();
-
     }
 
     @PostMapping("register")

@@ -24,19 +24,6 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public String checkUsernamePassword(String username, String password) {
-        for (Account account : getAccounts()) {
-            if (username.equalsIgnoreCase(account.getUsername())) {
-                if (password.equals(account.getPassword())) {
-                    return "usernameAndPasswordCorrect";
-                }
-                return "usernameCorrectPasswordWrong";
-            }
-        }
-        return "userNotFound";
-    }
-
-    @Override
     public Account getAccountById(Long id) {
         Optional<Account> account = accountRepo.findById(id);
         return unwrapAccount(account, id);

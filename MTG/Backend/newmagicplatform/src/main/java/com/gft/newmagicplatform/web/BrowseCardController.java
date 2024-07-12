@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.gft.newmagicplatform.io.JsonDataLoader;
@@ -21,6 +22,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 
 @Controller
 @RequestMapping("/browse")
+@RestController("/browse")
 public class BrowseCardController {
 
     private JsonDataLoader jsonDataLoader = null;
@@ -54,7 +56,7 @@ public class BrowseCardController {
 
         int start = Math.min(page * size, allCards.size());
         int end = Math.min(start + size, allCards.size());
-        return new ResponseEntity<>(allCards.subList(start, end), HttpStatus.OK);     
+        return new ResponseEntity<>(allCards.subList(start, end), HttpStatus.OK);
     }
 
     @GetMapping("/search")
@@ -64,12 +66,11 @@ public class BrowseCardController {
 
     @GetMapping("/totalPages")
     public ResponseEntity<Integer> getTotalPages(@RequestParam(defaultValue = "25") int size) {
-        
+
         int totalCards = allCards.size();
         int totalPages = (int) Math.ceil((double) totalCards / size);
 
         return new ResponseEntity<>(totalPages, HttpStatus.OK);
     }
-    
 
 }

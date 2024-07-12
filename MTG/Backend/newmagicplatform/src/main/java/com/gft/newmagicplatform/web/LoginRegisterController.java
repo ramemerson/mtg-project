@@ -6,19 +6,22 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.gft.newmagicplatform.entity.Account;
 import com.gft.newmagicplatform.entity.Wallet;
+import com.gft.newmagicplatform.login.LoginResponse;
 import com.gft.newmagicplatform.service.AccountServiceImpl;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import lombok.AllArgsConstructor;
+
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-
 @Controller
 @RequestMapping("/startup")
 @AllArgsConstructor
+@CrossOrigin(origins = "http://localhost:4200")
 public class LoginRegisterController {
 
     private AccountServiceImpl accountServiceImpl;
@@ -54,6 +57,13 @@ public class LoginRegisterController {
         return "redirect:/startup/";
     }
 
+    @GetMapping("/loginattempt")
+    public LoginResponse authenticate(String username, String password) {
+        
+        return new LoginResponse();
+
+    }
+
     @PostMapping("register")
     public String getRegisterPage(Model model) {
         model.addAttribute("account", new Account());
@@ -85,7 +95,5 @@ public class LoginRegisterController {
         }
         return "redirect:/startup/";
     }
-    
-    
 
 }

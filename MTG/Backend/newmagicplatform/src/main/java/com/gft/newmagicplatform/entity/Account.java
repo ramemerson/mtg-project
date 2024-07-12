@@ -8,9 +8,9 @@ import java.util.Set;
 
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
-import org.springframework.boot.autoconfigure.task.TaskExecutionProperties.Simple;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;
@@ -43,9 +43,11 @@ public class Account {
     private String email;
 
     @OneToOne(mappedBy = "account", cascade = CascadeType.ALL)
+    @JsonManagedReference
     private Wallet wallet;
 
     @OneToMany(mappedBy = "account", cascade = CascadeType.ALL)
+    @JsonManagedReference
     private Set<Deck> decks;
 
     @JsonIgnore

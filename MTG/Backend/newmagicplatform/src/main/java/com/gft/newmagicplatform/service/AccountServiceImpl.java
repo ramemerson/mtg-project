@@ -5,8 +5,12 @@ import java.util.List;
 import java.util.Optional;
 import org.springframework.stereotype.Service;
 import com.gft.newmagicplatform.entity.Account;
+import com.gft.newmagicplatform.entity.Wallet;
 import com.gft.newmagicplatform.exception.UserNotFoundException;
+import com.gft.newmagicplatform.pojo.AccountDto;
 import com.gft.newmagicplatform.repository.AccountRepo;
+
+import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
 
 @Service
@@ -39,9 +43,9 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public boolean accountExists(Account account) {
-        for (Account account2 : getAccounts()) {
-            if (account2.getUsername().equalsIgnoreCase(account.getUsername())) {
+    public boolean accountExists(String username) {
+        for (Account accountToSearch : getAccounts()) {
+            if (accountToSearch.getUsername().equalsIgnoreCase(getAcountByUsername(username).getUsername())) {
                 return true;
             }
         }
@@ -64,23 +68,47 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public Account updateAccount(Long id, Account account) {
-        Optional<Account> accountFound = accountRepo.findById(id);
-        if (accountFound.isPresent()) {
-            Account accountToUpdate = accountFound.get();
-            accountToUpdate.setFirstname(account.getFirstname());
-            accountToUpdate.setLastname(account.getLastname());
-            accountToUpdate.setUsername(account.getUsername());
-            accountToUpdate.setPassword(account.getPassword());
-            try {
-                accountToUpdate.setBirthday(account.getBirthdayStringFormatted());
-            } catch (ParseException e) {
-                e.printStackTrace();
-            }
-            accountToUpdate.setEmail(account.getEmail());
-            return accountRepo.save(accountToUpdate);
+    public void updateAccount(Long id, Optional<Account> userById) {
+        Optional<Account> existingUser = accountRepo.findById(id);
+
+        if (existingUser.isPresent() && userById.isPresent()) {
+
+            Account account = existingUser.get();
+            Account newAccount = userById.get();
+
+            account.setFirstname(newAccount.getFirstname());
+            account.setLastname(newAccount.getLastname());
+            account.setEmail(newAccount.getEmail());
+            account.setUsername(newAccount.getUsername());
+            account.setPassword(newAccount.getPassword());
+            account.setCards(newAccount.getCards());
+            account.setDecks(newAccount.getDecks());
+            account.setWallet(newAccount.getWallet());
+            accountRepo.save(account);
+        } else {
+            throw new EntityNotFoundException("Account with ID " + id + " was not found.");
         }
-        return null;
+    }
+
+    @Override
+    public Account createAccount(AccountDto accountDto) {
+        Account account = new Account();
+        account.setFirstname(accountDto.getFirstname());
+        account.setLastname(accountDto.getLastname());
+        account.setUsername(accountDto.getUsername());
+        account.setPassword(accountDto.getPassword());
+        account.setEmail(accountDto.getEmail());
+        try {
+            account.setBirthday(accountDto.getBirthday());
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        Wallet wallet = new Wallet();
+        wallet.setAccount(account);
+        account.setWallet(wallet);
+
+        return accountRepo.save(account);
     }
 
 }

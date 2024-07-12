@@ -1,5 +1,7 @@
 package com.gft.newmagicplatform.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -14,6 +16,7 @@ public class Wallet {
     private Long id;
 
     @OneToOne
+    @JsonBackReference
     private Account account;
 
     private Double budget;

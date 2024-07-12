@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import com.gft.newmagicplatform.entity.Account;
+import com.gft.newmagicplatform.pojo.AccountDto;
 
 public interface AccountService {
     Account save(Account account);
@@ -12,13 +13,16 @@ public interface AccountService {
 
     List<Account> getAccounts();
 
-    boolean accountExists(Account account);
+    boolean accountExists(String username);
 
     Account getAcountByUsername(String username);
 
     void deleteAccount(Long id);
 
-    Account updateAccount(Long id, Account account);
+    void updateAccount(Long id, Optional<Account> userById);
 
     Account unwrapAccount(Optional<Account> entity, Long id);
+
+    Account createAccount(AccountDto accountDto);
+
 }

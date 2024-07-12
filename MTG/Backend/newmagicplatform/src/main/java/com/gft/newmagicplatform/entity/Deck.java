@@ -2,6 +2,8 @@ package com.gft.newmagicplatform.entity;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import jakarta.persistence.*;
@@ -11,6 +13,7 @@ import lombok.*;
 @Getter
 @Setter
 @Table(name = "deck")
+@NoArgsConstructor
 public class Deck {
 
     @Id
@@ -22,16 +25,14 @@ public class Deck {
 
     @ManyToOne
     @JoinColumn(name = "account_id")
+    @JsonBackReference
     private Account account;
 
     @JsonIgnore
     @ElementCollection
-    @CollectionTable(
-        name = "deck_cards", 
-        joinColumns = @JoinColumn(name = "deck_id")
-    )
+    @CollectionTable(name = "deck_cards", joinColumns = @JoinColumn(name = "deck_id"))
     @Column(name = "card_id")
-    private List<String> cards; 
+    private List<String> cards;
 
     public Deck(int amountOfCards, String deckArchytype, String saleStatus) {
         setAmountOfCards(amountOfCards);

@@ -1,10 +1,15 @@
 package com.gft.newmagicplatform.service;
 
+import org.springframework.stereotype.Service;
+
 import com.gft.newmagicplatform.entity.Account;
 import com.gft.newmagicplatform.repository.AccountRepo;
 
 import jakarta.transaction.Transactional;
+import lombok.AllArgsConstructor;
 
+@Service
+@AllArgsConstructor
 public class CardServiceImpl implements CardService {
 
     AccountRepo accountRepo;

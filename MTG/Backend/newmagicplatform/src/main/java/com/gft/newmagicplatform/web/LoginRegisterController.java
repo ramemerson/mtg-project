@@ -75,7 +75,7 @@ public class LoginRegisterController {
     @PostMapping("register/attempt")
     public String registerAttempt(Account account, RedirectAttributes ra) {
         String status = "failed";
-        if (accountServiceImpl.accountExists(account)) {
+        if (accountServiceImpl.accountExists(account.getUsername())) {
             status = "userexists";
             ra.addFlashAttribute("status", status);
             return "redirect:/startup/";

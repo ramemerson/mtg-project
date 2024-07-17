@@ -8,663 +8,1521 @@
 /* eslint-disable */
 // ReSharper disable InconsistentNaming
 
-import {
-  mergeMap as _observableMergeMap,
-  catchError as _observableCatch,
-} from 'rxjs/operators';
-import {
-  Observable,
-  throwError as _observableThrow,
-  of as _observableOf,
-} from 'rxjs';
+import { mergeMap as _observableMergeMap, catchError as _observableCatch } from 'rxjs/operators';
+import { Observable, throwError as _observableThrow, of as _observableOf } from 'rxjs';
 import { Injectable, Inject, Optional, InjectionToken } from '@angular/core';
-import {
-  HttpClient,
-  HttpHeaders,
-  HttpResponse,
-  HttpResponseBase,
-} from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpResponse, HttpResponseBase } from '@angular/common/http';
 
 export const API_BASE_URL = new InjectionToken<string>('API_BASE_URL');
 
 @Injectable({
-  providedIn: 'root',
+    providedIn: 'root'
+})
+export class AccountControllerClient {
+    private http: HttpClient;
+    private baseUrl: string;
+    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
+
+    constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(API_BASE_URL) baseUrl?: string) {
+        this.http = http;
+        this.baseUrl = baseUrl ?? "http://localhost:8080";
+    }
+
+    /**
+     * @param body (optional) 
+     * @return OK
+     */
+    update(id: number, body: Account | undefined): Observable<void> {
+        let url_ = this.baseUrl + "/account/update/{id}?";
+        if (id === undefined || id === null)
+            throw new Error("The parameter 'id' must be defined and cannot be null.");
+        else
+            url_ += "id=" + encodeURIComponent("" + id) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json",
+            })
+        };
+
+        return this.http.request("put", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processUpdate(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processUpdate(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<void>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<void>;
+        }));
+    }
+
+    protected processUpdate(response: HttpResponseBase): Observable<void> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return _observableOf(null as any);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
+    }
+
+    /**
+     * @return OK
+     */
+    create(body: AccountDto): Observable<Account> {
+        let url_ = this.baseUrl + "/account/create";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json",
+                "Accept": "*/*"
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processCreate(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processCreate(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<Account>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<Account>;
+        }));
+    }
+
+    protected processCreate(response: HttpResponseBase): Observable<Account> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = Account.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
+    }
+
+    /**
+     * @return OK
+     */
+    getByUsername(username: string): Observable<Account> {
+        let url_ = this.baseUrl + "/account/getByUsername?";
+        if (username === undefined || username === null)
+            throw new Error("The parameter 'username' must be defined and cannot be null.");
+        else
+            url_ += "username=" + encodeURIComponent("" + username) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "*/*"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetByUsername(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetByUsername(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<Account>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<Account>;
+        }));
+    }
+
+    protected processGetByUsername(response: HttpResponseBase): Observable<Account> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = Account.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
+    }
+
+    /**
+     * @return OK
+     */
+    getById(id: number): Observable<Account> {
+        let url_ = this.baseUrl + "/account/getById?";
+        if (id === undefined || id === null)
+            throw new Error("The parameter 'id' must be defined and cannot be null.");
+        else
+            url_ += "id=" + encodeURIComponent("" + id) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "*/*"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetById(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetById(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<Account>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<Account>;
+        }));
+    }
+
+    protected processGetById(response: HttpResponseBase): Observable<Account> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = Account.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
+    }
+
+    /**
+     * @return OK
+     */
+    getAccounts(): Observable<Account[]> {
+        let url_ = this.baseUrl + "/account/getAccounts";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "*/*"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetAccounts(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetAccounts(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<Account[]>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<Account[]>;
+        }));
+    }
+
+    protected processGetAccounts(response: HttpResponseBase): Observable<Account[]> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            if (Array.isArray(resultData200)) {
+                result200 = [] as any;
+                for (let item of resultData200)
+                    result200!.push(Account.fromJS(item));
+            }
+            else {
+                result200 = <any>null;
+            }
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
+    }
+
+    /**
+     * @return OK
+     */
+    accountExists(username: string): Observable<boolean> {
+        let url_ = this.baseUrl + "/account/accountExists?";
+        if (username === undefined || username === null)
+            throw new Error("The parameter 'username' must be defined and cannot be null.");
+        else
+            url_ += "username=" + encodeURIComponent("" + username) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "*/*"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processAccountExists(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processAccountExists(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<boolean>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<boolean>;
+        }));
+    }
+
+    protected processAccountExists(response: HttpResponseBase): Observable<boolean> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+                result200 = resultData200 !== undefined ? resultData200 : <any>null;
+    
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
+    }
+
+    /**
+     * @return OK
+     */
+    delete(id: number): Observable<void> {
+        let url_ = this.baseUrl + "/account/delete?";
+        if (id === undefined || id === null)
+            throw new Error("The parameter 'id' must be defined and cannot be null.");
+        else
+            url_ += "id=" + encodeURIComponent("" + id) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+            })
+        };
+
+        return this.http.request("delete", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processDelete(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processDelete(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<void>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<void>;
+        }));
+    }
+
+    protected processDelete(response: HttpResponseBase): Observable<void> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return _observableOf(null as any);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
+    }
+}
+
+@Injectable({
+    providedIn: 'root'
+})
+export class CardControllerClient {
+    private http: HttpClient;
+    private baseUrl: string;
+    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
+
+    constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(API_BASE_URL) baseUrl?: string) {
+        this.http = http;
+        this.baseUrl = baseUrl ?? "http://localhost:8080";
+    }
+
+    /**
+     * @return OK
+     */
+    save(id: number, body: string): Observable<Anonymous> {
+        let url_ = this.baseUrl + "/card/save/{id}";
+        if (id === undefined || id === null)
+            throw new Error("The parameter 'id' must be defined.");
+        url_ = url_.replace("{id}", encodeURIComponent("" + id));
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json",
+                "Accept": "*/*"
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processSave(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processSave(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<Anonymous>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<Anonymous>;
+        }));
+    }
+
+    protected processSave(response: HttpResponseBase): Observable<Anonymous> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+                result200 = resultData200 !== undefined ? resultData200 : <any>null;
+    
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
+    }
+
+    /**
+     * @return OK
+     */
+    delete(id: number, body: string): Observable<Anonymous2> {
+        let url_ = this.baseUrl + "/card/delete/{id}";
+        if (id === undefined || id === null)
+            throw new Error("The parameter 'id' must be defined.");
+        url_ = url_.replace("{id}", encodeURIComponent("" + id));
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json",
+                "Accept": "*/*"
+            })
+        };
+
+        return this.http.request("delete", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processDelete(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processDelete(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<Anonymous2>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<Anonymous2>;
+        }));
+    }
+
+    protected processDelete(response: HttpResponseBase): Observable<Anonymous2> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+                result200 = resultData200 !== undefined ? resultData200 : <any>null;
+    
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
+    }
+}
+
+@Injectable({
+    providedIn: 'root'
 })
 export class BrowseCardControllerClient {
-  private http: HttpClient;
-  private baseUrl: string;
-  protected jsonParseReviver: ((key: string, value: any) => any) | undefined =
-    undefined;
+    private http: HttpClient;
+    private baseUrl: string;
+    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
 
-  constructor(
-    @Inject(HttpClient) http: HttpClient,
-    @Optional() @Inject(API_BASE_URL) baseUrl?: string
-  ) {
-    this.http = http;
-    this.baseUrl = baseUrl ?? 'http://localhost:8080';
-  }
+    constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(API_BASE_URL) baseUrl?: string) {
+        this.http = http;
+        this.baseUrl = baseUrl ?? "http://localhost:8080";
+    }
 
-  /**
-   * @param size (optional)
-   * @return OK
-   */
-  totalPages(size: number | undefined): Observable<number> {
-    let url_ = this.baseUrl + '/browse/totalPages?';
-    if (size === null) throw new Error("The parameter 'size' cannot be null.");
-    else if (size !== undefined)
-      url_ += 'size=' + encodeURIComponent('' + size) + '&';
-    url_ = url_.replace(/[?&]$/, '');
+    /**
+     * @param size (optional) 
+     * @return OK
+     */
+    totalPages(size: number | undefined): Observable<number> {
+        let url_ = this.baseUrl + "/browse/totalPages?";
+        if (size === null)
+            throw new Error("The parameter 'size' cannot be null.");
+        else if (size !== undefined)
+            url_ += "size=" + encodeURIComponent("" + size) + "&";
+        url_ = url_.replace(/[?&]$/, "");
 
-    let options_: any = {
-      observe: 'response',
-      responseType: 'blob',
-      headers: new HttpHeaders({
-        Accept: '*/*',
-      }),
-    };
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "*/*"
+            })
+        };
 
-    return this.http
-      .request('get', url_, options_)
-      .pipe(
-        _observableMergeMap((response_: any) => {
-          return this.processTotalPages(response_);
-        })
-      )
-      .pipe(
-        _observableCatch((response_: any) => {
-          if (response_ instanceof HttpResponseBase) {
-            try {
-              return this.processTotalPages(response_ as any);
-            } catch (e) {
-              return _observableThrow(e) as any as Observable<number>;
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processTotalPages(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processTotalPages(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<number>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<number>;
+        }));
+    }
+
+    protected processTotalPages(response: HttpResponseBase): Observable<number> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+                result200 = resultData200 !== undefined ? resultData200 : <any>null;
+    
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
+    }
+
+    /**
+     * @return OK
+     */
+    search(query: string): Observable<Card[]> {
+        let url_ = this.baseUrl + "/browse/search?";
+        if (query === undefined || query === null)
+            throw new Error("The parameter 'query' must be defined and cannot be null.");
+        else
+            url_ += "query=" + encodeURIComponent("" + query) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "*/*"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processSearch(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processSearch(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<Card[]>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<Card[]>;
+        }));
+    }
+
+    protected processSearch(response: HttpResponseBase): Observable<Card[]> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            if (Array.isArray(resultData200)) {
+                result200 = [] as any;
+                for (let item of resultData200)
+                    result200!.push(Card.fromJS(item));
             }
-          } else
-            return _observableThrow(response_) as any as Observable<number>;
-        })
-      );
-  }
-
-  protected processTotalPages(response: HttpResponseBase): Observable<number> {
-    const status = response.status;
-    const responseBlob =
-      response instanceof HttpResponse
-        ? response.body
-        : (response as any).error instanceof Blob
-        ? (response as any).error
-        : undefined;
-
-    let _headers: any = {};
-    if (response.headers) {
-      for (let key of response.headers.keys()) {
-        _headers[key] = response.headers.get(key);
-      }
-    }
-    if (status === 200) {
-      return blobToText(responseBlob).pipe(
-        _observableMergeMap((_responseText: string) => {
-          let result200: any = null;
-          let resultData200 =
-            _responseText === ''
-              ? null
-              : JSON.parse(_responseText, this.jsonParseReviver);
-          result200 = resultData200 !== undefined ? resultData200 : <any>null;
-
-          return _observableOf(result200);
-        })
-      );
-    } else if (status !== 200 && status !== 204) {
-      return blobToText(responseBlob).pipe(
-        _observableMergeMap((_responseText: string) => {
-          return throwException(
-            'An unexpected server error occurred.',
-            status,
-            _responseText,
-            _headers
-          );
-        })
-      );
-    }
-    return _observableOf(null as any);
-  }
-
-  /**
-   * @return OK
-   */
-  search(query: string): Observable<Card[]> {
-    let url_ = this.baseUrl + '/browse/search?';
-    if (query === undefined || query === null)
-      throw new Error(
-        "The parameter 'query' must be defined and cannot be null."
-      );
-    else url_ += 'query=' + encodeURIComponent('' + query) + '&';
-    url_ = url_.replace(/[?&]$/, '');
-
-    let options_: any = {
-      observe: 'response',
-      responseType: 'blob',
-      headers: new HttpHeaders({
-        Accept: '*/*',
-      }),
-    };
-
-    return this.http
-      .request('get', url_, options_)
-      .pipe(
-        _observableMergeMap((response_: any) => {
-          return this.processSearch(response_);
-        })
-      )
-      .pipe(
-        _observableCatch((response_: any) => {
-          if (response_ instanceof HttpResponseBase) {
-            try {
-              return this.processSearch(response_ as any);
-            } catch (e) {
-              return _observableThrow(e) as any as Observable<Card[]>;
+            else {
+                result200 = <any>null;
             }
-          } else
-            return _observableThrow(response_) as any as Observable<Card[]>;
-        })
-      );
-  }
-
-  protected processSearch(response: HttpResponseBase): Observable<Card[]> {
-    const status = response.status;
-    const responseBlob =
-      response instanceof HttpResponse
-        ? response.body
-        : (response as any).error instanceof Blob
-        ? (response as any).error
-        : undefined;
-
-    let _headers: any = {};
-    if (response.headers) {
-      for (let key of response.headers.keys()) {
-        _headers[key] = response.headers.get(key);
-      }
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
     }
-    if (status === 200) {
-      return blobToText(responseBlob).pipe(
-        _observableMergeMap((_responseText: string) => {
-          let result200: any = null;
-          let resultData200 =
-            _responseText === ''
-              ? null
-              : JSON.parse(_responseText, this.jsonParseReviver);
-          if (Array.isArray(resultData200)) {
-            result200 = [] as any;
-            for (let item of resultData200) result200!.push(Card.fromJS(item));
-          } else {
-            result200 = <any>null;
-          }
-          return _observableOf(result200);
-        })
-      );
-    } else if (status !== 200 && status !== 204) {
-      return blobToText(responseBlob).pipe(
-        _observableMergeMap((_responseText: string) => {
-          return throwException(
-            'An unexpected server error occurred.',
-            status,
-            _responseText,
-            _headers
-          );
-        })
-      );
+
+    /**
+     * @param page (optional) 
+     * @param size (optional) 
+     * @return OK
+     */
+    page(page: number | undefined, size: number | undefined): Observable<Card[]> {
+        let url_ = this.baseUrl + "/browse/page?";
+        if (page === null)
+            throw new Error("The parameter 'page' cannot be null.");
+        else if (page !== undefined)
+            url_ += "page=" + encodeURIComponent("" + page) + "&";
+        if (size === null)
+            throw new Error("The parameter 'size' cannot be null.");
+        else if (size !== undefined)
+            url_ += "size=" + encodeURIComponent("" + size) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "*/*"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processPage(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processPage(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<Card[]>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<Card[]>;
+        }));
     }
-    return _observableOf(null as any);
-  }
 
-  /**
-   * @param page (optional)
-   * @param size (optional)
-   * @return OK
-   */
-  page(page: number | undefined, size: number | undefined): Observable<Card[]> {
-    let url_ = this.baseUrl + '/browse/page?';
-    if (page === null) throw new Error("The parameter 'page' cannot be null.");
-    else if (page !== undefined)
-      url_ += 'page=' + encodeURIComponent('' + page) + '&';
-    if (size === null) throw new Error("The parameter 'size' cannot be null.");
-    else if (size !== undefined)
-      url_ += 'size=' + encodeURIComponent('' + size) + '&';
-    url_ = url_.replace(/[?&]$/, '');
+    protected processPage(response: HttpResponseBase): Observable<Card[]> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
 
-    let options_: any = {
-      observe: 'response',
-      responseType: 'blob',
-      headers: new HttpHeaders({
-        Accept: '*/*',
-      }),
-    };
-
-    return this.http
-      .request('get', url_, options_)
-      .pipe(
-        _observableMergeMap((response_: any) => {
-          return this.processPage(response_);
-        })
-      )
-      .pipe(
-        _observableCatch((response_: any) => {
-          if (response_ instanceof HttpResponseBase) {
-            try {
-              return this.processPage(response_ as any);
-            } catch (e) {
-              return _observableThrow(e) as any as Observable<Card[]>;
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            if (Array.isArray(resultData200)) {
+                result200 = [] as any;
+                for (let item of resultData200)
+                    result200!.push(Card.fromJS(item));
             }
-          } else
-            return _observableThrow(response_) as any as Observable<Card[]>;
-        })
-      );
-  }
-
-  protected processPage(response: HttpResponseBase): Observable<Card[]> {
-    const status = response.status;
-    const responseBlob =
-      response instanceof HttpResponse
-        ? response.body
-        : (response as any).error instanceof Blob
-        ? (response as any).error
-        : undefined;
-
-    let _headers: any = {};
-    if (response.headers) {
-      for (let key of response.headers.keys()) {
-        _headers[key] = response.headers.get(key);
-      }
+            else {
+                result200 = <any>null;
+            }
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
     }
-    if (status === 200) {
-      return blobToText(responseBlob).pipe(
-        _observableMergeMap((_responseText: string) => {
-          let result200: any = null;
-          let resultData200 =
-            _responseText === ''
-              ? null
-              : JSON.parse(_responseText, this.jsonParseReviver);
-          if (Array.isArray(resultData200)) {
-            result200 = [] as any;
-            for (let item of resultData200) result200!.push(Card.fromJS(item));
-          } else {
-            result200 = <any>null;
-          }
-          return _observableOf(result200);
-        })
-      );
-    } else if (status !== 200 && status !== 204) {
-      return blobToText(responseBlob).pipe(
-        _observableMergeMap((_responseText: string) => {
-          return throwException(
-            'An unexpected server error occurred.',
-            status,
-            _responseText,
-            _headers
-          );
-        })
-      );
+}
+
+export class Account implements IAccount {
+    id?: number;
+    firstname?: string;
+    lastname?: string;
+    username!: string;
+    password!: string;
+    birthday?: Date;
+    email?: string;
+    wallet?: Wallet;
+    decks?: Deck[];
+    birthdayStringFormatted?: string;
+
+    [key: string]: any;
+
+    constructor(data?: IAccount) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
     }
-    return _observableOf(null as any);
-  }
+
+    init(_data?: any) {
+        if (_data) {
+            for (var property in _data) {
+                if (_data.hasOwnProperty(property))
+                    this[property] = _data[property];
+            }
+            this.id = _data["id"];
+            this.firstname = _data["firstname"];
+            this.lastname = _data["lastname"];
+            this.username = _data["username"];
+            this.password = _data["password"];
+            this.birthday = _data["birthday"] ? new Date(_data["birthday"].toString()) : <any>undefined;
+            this.email = _data["email"];
+            this.wallet = _data["wallet"] ? Wallet.fromJS(_data["wallet"]) : <any>undefined;
+            if (Array.isArray(_data["decks"])) {
+                this.decks = [] as any;
+                for (let item of _data["decks"])
+                    this.decks!.push(Deck.fromJS(item));
+            }
+            this.birthdayStringFormatted = _data["birthdayStringFormatted"];
+        }
+    }
+
+    static fromJS(data: any): Account {
+        data = typeof data === 'object' ? data : {};
+        let result = new Account();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        for (var property in this) {
+            if (this.hasOwnProperty(property))
+                data[property] = this[property];
+        }
+        data["id"] = this.id;
+        data["firstname"] = this.firstname;
+        data["lastname"] = this.lastname;
+        data["username"] = this.username;
+        data["password"] = this.password;
+        data["birthday"] = this.birthday ? this.birthday.toISOString() : <any>undefined;
+        data["email"] = this.email;
+        data["wallet"] = this.wallet ? this.wallet.toJSON() : <any>undefined;
+        if (Array.isArray(this.decks)) {
+            data["decks"] = [];
+            for (let item of this.decks)
+                data["decks"].push(item.toJSON());
+        }
+        data["birthdayStringFormatted"] = this.birthdayStringFormatted;
+        return data;
+    }
+}
+
+export interface IAccount {
+    id?: number;
+    firstname?: string;
+    lastname?: string;
+    username: string;
+    password: string;
+    birthday?: Date;
+    email?: string;
+    wallet?: Wallet;
+    decks?: Deck[];
+    birthdayStringFormatted?: string;
+
+    [key: string]: any;
+}
+
+export class Deck implements IDeck {
+    id?: number;
+    amountOfCards?: number;
+    deckArchytype?: string;
+    saleStatus?: string;
+    account?: Account;
+
+    [key: string]: any;
+
+    constructor(data?: IDeck) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            for (var property in _data) {
+                if (_data.hasOwnProperty(property))
+                    this[property] = _data[property];
+            }
+            this.id = _data["id"];
+            this.amountOfCards = _data["amountOfCards"];
+            this.deckArchytype = _data["deckArchytype"];
+            this.saleStatus = _data["saleStatus"];
+            this.account = _data["account"] ? Account.fromJS(_data["account"]) : <any>undefined;
+        }
+    }
+
+    static fromJS(data: any): Deck {
+        data = typeof data === 'object' ? data : {};
+        let result = new Deck();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        for (var property in this) {
+            if (this.hasOwnProperty(property))
+                data[property] = this[property];
+        }
+        data["id"] = this.id;
+        data["amountOfCards"] = this.amountOfCards;
+        data["deckArchytype"] = this.deckArchytype;
+        data["saleStatus"] = this.saleStatus;
+        data["account"] = this.account ? this.account.toJSON() : <any>undefined;
+        return data;
+    }
+}
+
+export interface IDeck {
+    id?: number;
+    amountOfCards?: number;
+    deckArchytype?: string;
+    saleStatus?: string;
+    account?: Account;
+
+    [key: string]: any;
+}
+
+export class Wallet implements IWallet {
+    id?: number;
+    account?: Account;
+    budget?: number;
+
+    [key: string]: any;
+
+    constructor(data?: IWallet) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            for (var property in _data) {
+                if (_data.hasOwnProperty(property))
+                    this[property] = _data[property];
+            }
+            this.id = _data["id"];
+            this.account = _data["account"] ? Account.fromJS(_data["account"]) : <any>undefined;
+            this.budget = _data["budget"];
+        }
+    }
+
+    static fromJS(data: any): Wallet {
+        data = typeof data === 'object' ? data : {};
+        let result = new Wallet();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        for (var property in this) {
+            if (this.hasOwnProperty(property))
+                data[property] = this[property];
+        }
+        data["id"] = this.id;
+        data["account"] = this.account ? this.account.toJSON() : <any>undefined;
+        data["budget"] = this.budget;
+        return data;
+    }
+}
+
+export interface IWallet {
+    id?: number;
+    account?: Account;
+    budget?: number;
+
+    [key: string]: any;
+}
+
+export class AccountDto implements IAccountDto {
+    firstname?: string;
+    lastname?: string;
+    username?: string;
+    email?: string;
+    password?: string;
+    birthday?: string;
+
+    [key: string]: any;
+
+    constructor(data?: IAccountDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            for (var property in _data) {
+                if (_data.hasOwnProperty(property))
+                    this[property] = _data[property];
+            }
+            this.firstname = _data["firstname"];
+            this.lastname = _data["lastname"];
+            this.username = _data["username"];
+            this.email = _data["email"];
+            this.password = _data["password"];
+            this.birthday = _data["birthday"];
+        }
+    }
+
+    static fromJS(data: any): AccountDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new AccountDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        for (var property in this) {
+            if (this.hasOwnProperty(property))
+                data[property] = this[property];
+        }
+        data["firstname"] = this.firstname;
+        data["lastname"] = this.lastname;
+        data["username"] = this.username;
+        data["email"] = this.email;
+        data["password"] = this.password;
+        data["birthday"] = this.birthday;
+        return data;
+    }
+}
+
+export interface IAccountDto {
+    firstname?: string;
+    lastname?: string;
+    username?: string;
+    email?: string;
+    password?: string;
+    birthday?: string;
+
+    [key: string]: any;
 }
 
 export class Card implements ICard {
-  id?: string;
-  oracle_id?: string;
-  multiverse_ids?: number[];
-  mtgo_id?: number;
-  set_id?: string;
-  name?: string;
-  released_at?: string;
-  uri?: string;
-  scryfall_uri?: string;
-  image_uris?: ImageUris;
-  mana_cost?: string;
-  cmc?: number;
-  type_line?: string;
-  oracle_text?: string;
-  power?: string;
-  toughness?: string;
-  colors?: string[];
-  color_identity?: string[];
-  keywords?: string[];
-  set?: string;
-  set_name?: string;
-  set_type?: string;
-  rarity?: string;
-  prices?: Prices;
+    id?: string;
+    oracle_id?: string;
+    multiverse_ids?: number[];
+    mtgo_id?: number;
+    set_id?: string;
+    name?: string;
+    released_at?: string;
+    uri?: string;
+    scryfall_uri?: string;
+    image_uris?: ImageUris;
+    mana_cost?: string;
+    cmc?: number;
+    type_line?: string;
+    oracle_text?: string;
+    power?: string;
+    toughness?: string;
+    colors?: string[];
+    color_identity?: string[];
+    keywords?: string[];
+    set?: string;
+    set_name?: string;
+    set_type?: string;
+    rarity?: string;
+    prices?: Prices;
 
-  [key: string]: any;
+    [key: string]: any;
 
-  constructor(data?: ICard) {
-    if (data) {
-      for (var property in data) {
-        if (data.hasOwnProperty(property))
-          (<any>this)[property] = (<any>data)[property];
-      }
+    constructor(data?: ICard) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
     }
-  }
 
-  init(_data?: any) {
-    if (_data) {
-      for (var property in _data) {
-        if (_data.hasOwnProperty(property)) this[property] = _data[property];
-      }
-      this.id = _data['id'];
-      this.oracle_id = _data['oracle_id'];
-      if (Array.isArray(_data['multiverse_ids'])) {
-        this.multiverse_ids = [] as any;
-        for (let item of _data['multiverse_ids'])
-          this.multiverse_ids!.push(item);
-      }
-      this.mtgo_id = _data['mtgo_id'];
-      this.set_id = _data['set_id'];
-      this.name = _data['name'];
-      this.released_at = _data['released_at'];
-      this.uri = _data['uri'];
-      this.scryfall_uri = _data['scryfall_uri'];
-      this.image_uris = _data['image_uris']
-        ? ImageUris.fromJS(_data['image_uris'])
-        : <any>undefined;
-      this.mana_cost = _data['mana_cost'];
-      this.cmc = _data['cmc'];
-      this.type_line = _data['type_line'];
-      this.oracle_text = _data['oracle_text'];
-      this.power = _data['power'];
-      this.toughness = _data['toughness'];
-      if (Array.isArray(_data['colors'])) {
-        this.colors = [] as any;
-        for (let item of _data['colors']) this.colors!.push(item);
-      }
-      if (Array.isArray(_data['color_identity'])) {
-        this.color_identity = [] as any;
-        for (let item of _data['color_identity'])
-          this.color_identity!.push(item);
-      }
-      if (Array.isArray(_data['keywords'])) {
-        this.keywords = [] as any;
-        for (let item of _data['keywords']) this.keywords!.push(item);
-      }
-      this.set = _data['set'];
-      this.set_name = _data['set_name'];
-      this.set_type = _data['set_type'];
-      this.rarity = _data['rarity'];
-      this.prices = _data['prices']
-        ? Prices.fromJS(_data['prices'])
-        : <any>undefined;
+    init(_data?: any) {
+        if (_data) {
+            for (var property in _data) {
+                if (_data.hasOwnProperty(property))
+                    this[property] = _data[property];
+            }
+            this.id = _data["id"];
+            this.oracle_id = _data["oracle_id"];
+            if (Array.isArray(_data["multiverse_ids"])) {
+                this.multiverse_ids = [] as any;
+                for (let item of _data["multiverse_ids"])
+                    this.multiverse_ids!.push(item);
+            }
+            this.mtgo_id = _data["mtgo_id"];
+            this.set_id = _data["set_id"];
+            this.name = _data["name"];
+            this.released_at = _data["released_at"];
+            this.uri = _data["uri"];
+            this.scryfall_uri = _data["scryfall_uri"];
+            this.image_uris = _data["image_uris"] ? ImageUris.fromJS(_data["image_uris"]) : <any>undefined;
+            this.mana_cost = _data["mana_cost"];
+            this.cmc = _data["cmc"];
+            this.type_line = _data["type_line"];
+            this.oracle_text = _data["oracle_text"];
+            this.power = _data["power"];
+            this.toughness = _data["toughness"];
+            if (Array.isArray(_data["colors"])) {
+                this.colors = [] as any;
+                for (let item of _data["colors"])
+                    this.colors!.push(item);
+            }
+            if (Array.isArray(_data["color_identity"])) {
+                this.color_identity = [] as any;
+                for (let item of _data["color_identity"])
+                    this.color_identity!.push(item);
+            }
+            if (Array.isArray(_data["keywords"])) {
+                this.keywords = [] as any;
+                for (let item of _data["keywords"])
+                    this.keywords!.push(item);
+            }
+            this.set = _data["set"];
+            this.set_name = _data["set_name"];
+            this.set_type = _data["set_type"];
+            this.rarity = _data["rarity"];
+            this.prices = _data["prices"] ? Prices.fromJS(_data["prices"]) : <any>undefined;
+        }
     }
-  }
 
-  static fromJS(data: any): Card {
-    data = typeof data === 'object' ? data : {};
-    let result = new Card();
-    result.init(data);
-    return result;
-  }
+    static fromJS(data: any): Card {
+        data = typeof data === 'object' ? data : {};
+        let result = new Card();
+        result.init(data);
+        return result;
+    }
 
-  toJSON(data?: any) {
-    data = typeof data === 'object' ? data : {};
-    for (var property in this) {
-      if (this.hasOwnProperty(property)) data[property] = this[property];
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        for (var property in this) {
+            if (this.hasOwnProperty(property))
+                data[property] = this[property];
+        }
+        data["id"] = this.id;
+        data["oracle_id"] = this.oracle_id;
+        if (Array.isArray(this.multiverse_ids)) {
+            data["multiverse_ids"] = [];
+            for (let item of this.multiverse_ids)
+                data["multiverse_ids"].push(item);
+        }
+        data["mtgo_id"] = this.mtgo_id;
+        data["set_id"] = this.set_id;
+        data["name"] = this.name;
+        data["released_at"] = this.released_at;
+        data["uri"] = this.uri;
+        data["scryfall_uri"] = this.scryfall_uri;
+        data["image_uris"] = this.image_uris ? this.image_uris.toJSON() : <any>undefined;
+        data["mana_cost"] = this.mana_cost;
+        data["cmc"] = this.cmc;
+        data["type_line"] = this.type_line;
+        data["oracle_text"] = this.oracle_text;
+        data["power"] = this.power;
+        data["toughness"] = this.toughness;
+        if (Array.isArray(this.colors)) {
+            data["colors"] = [];
+            for (let item of this.colors)
+                data["colors"].push(item);
+        }
+        if (Array.isArray(this.color_identity)) {
+            data["color_identity"] = [];
+            for (let item of this.color_identity)
+                data["color_identity"].push(item);
+        }
+        if (Array.isArray(this.keywords)) {
+            data["keywords"] = [];
+            for (let item of this.keywords)
+                data["keywords"].push(item);
+        }
+        data["set"] = this.set;
+        data["set_name"] = this.set_name;
+        data["set_type"] = this.set_type;
+        data["rarity"] = this.rarity;
+        data["prices"] = this.prices ? this.prices.toJSON() : <any>undefined;
+        return data;
     }
-    data['id'] = this.id;
-    data['oracle_id'] = this.oracle_id;
-    if (Array.isArray(this.multiverse_ids)) {
-      data['multiverse_ids'] = [];
-      for (let item of this.multiverse_ids) data['multiverse_ids'].push(item);
-    }
-    data['mtgo_id'] = this.mtgo_id;
-    data['set_id'] = this.set_id;
-    data['name'] = this.name;
-    data['released_at'] = this.released_at;
-    data['uri'] = this.uri;
-    data['scryfall_uri'] = this.scryfall_uri;
-    data['image_uris'] = this.image_uris
-      ? this.image_uris.toJSON()
-      : <any>undefined;
-    data['mana_cost'] = this.mana_cost;
-    data['cmc'] = this.cmc;
-    data['type_line'] = this.type_line;
-    data['oracle_text'] = this.oracle_text;
-    data['power'] = this.power;
-    data['toughness'] = this.toughness;
-    if (Array.isArray(this.colors)) {
-      data['colors'] = [];
-      for (let item of this.colors) data['colors'].push(item);
-    }
-    if (Array.isArray(this.color_identity)) {
-      data['color_identity'] = [];
-      for (let item of this.color_identity) data['color_identity'].push(item);
-    }
-    if (Array.isArray(this.keywords)) {
-      data['keywords'] = [];
-      for (let item of this.keywords) data['keywords'].push(item);
-    }
-    data['set'] = this.set;
-    data['set_name'] = this.set_name;
-    data['set_type'] = this.set_type;
-    data['rarity'] = this.rarity;
-    data['prices'] = this.prices ? this.prices.toJSON() : <any>undefined;
-    return data;
-  }
 }
 
 export interface ICard {
-  id?: string;
-  oracle_id?: string;
-  multiverse_ids?: number[];
-  mtgo_id?: number;
-  set_id?: string;
-  name?: string;
-  released_at?: string;
-  uri?: string;
-  scryfall_uri?: string;
-  image_uris?: ImageUris;
-  mana_cost?: string;
-  cmc?: number;
-  type_line?: string;
-  oracle_text?: string;
-  power?: string;
-  toughness?: string;
-  colors?: string[];
-  color_identity?: string[];
-  keywords?: string[];
-  set?: string;
-  set_name?: string;
-  set_type?: string;
-  rarity?: string;
-  prices?: Prices;
+    id?: string;
+    oracle_id?: string;
+    multiverse_ids?: number[];
+    mtgo_id?: number;
+    set_id?: string;
+    name?: string;
+    released_at?: string;
+    uri?: string;
+    scryfall_uri?: string;
+    image_uris?: ImageUris;
+    mana_cost?: string;
+    cmc?: number;
+    type_line?: string;
+    oracle_text?: string;
+    power?: string;
+    toughness?: string;
+    colors?: string[];
+    color_identity?: string[];
+    keywords?: string[];
+    set?: string;
+    set_name?: string;
+    set_type?: string;
+    rarity?: string;
+    prices?: Prices;
 
-  [key: string]: any;
+    [key: string]: any;
 }
 
 export class ImageUris implements IImageUris {
-  small?: string;
-  normal?: string;
-  large?: string;
-  png?: string;
-  art_crop?: string;
-  border_crop?: string;
+    small?: string;
+    normal?: string;
+    large?: string;
+    png?: string;
+    art_crop?: string;
+    border_crop?: string;
 
-  [key: string]: any;
+    [key: string]: any;
 
-  constructor(data?: IImageUris) {
-    if (data) {
-      for (var property in data) {
-        if (data.hasOwnProperty(property))
-          (<any>this)[property] = (<any>data)[property];
-      }
+    constructor(data?: IImageUris) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
     }
-  }
 
-  init(_data?: any) {
-    if (_data) {
-      for (var property in _data) {
-        if (_data.hasOwnProperty(property)) this[property] = _data[property];
-      }
-      this.small = _data['small'];
-      this.normal = _data['normal'];
-      this.large = _data['large'];
-      this.png = _data['png'];
-      this.art_crop = _data['art_crop'];
-      this.border_crop = _data['border_crop'];
+    init(_data?: any) {
+        if (_data) {
+            for (var property in _data) {
+                if (_data.hasOwnProperty(property))
+                    this[property] = _data[property];
+            }
+            this.small = _data["small"];
+            this.normal = _data["normal"];
+            this.large = _data["large"];
+            this.png = _data["png"];
+            this.art_crop = _data["art_crop"];
+            this.border_crop = _data["border_crop"];
+        }
     }
-  }
 
-  static fromJS(data: any): ImageUris {
-    data = typeof data === 'object' ? data : {};
-    let result = new ImageUris();
-    result.init(data);
-    return result;
-  }
-
-  toJSON(data?: any) {
-    data = typeof data === 'object' ? data : {};
-    for (var property in this) {
-      if (this.hasOwnProperty(property)) data[property] = this[property];
+    static fromJS(data: any): ImageUris {
+        data = typeof data === 'object' ? data : {};
+        let result = new ImageUris();
+        result.init(data);
+        return result;
     }
-    data['small'] = this.small;
-    data['normal'] = this.normal;
-    data['large'] = this.large;
-    data['png'] = this.png;
-    data['art_crop'] = this.art_crop;
-    data['border_crop'] = this.border_crop;
-    return data;
-  }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        for (var property in this) {
+            if (this.hasOwnProperty(property))
+                data[property] = this[property];
+        }
+        data["small"] = this.small;
+        data["normal"] = this.normal;
+        data["large"] = this.large;
+        data["png"] = this.png;
+        data["art_crop"] = this.art_crop;
+        data["border_crop"] = this.border_crop;
+        return data;
+    }
 }
 
 export interface IImageUris {
-  small?: string;
-  normal?: string;
-  large?: string;
-  png?: string;
-  art_crop?: string;
-  border_crop?: string;
+    small?: string;
+    normal?: string;
+    large?: string;
+    png?: string;
+    art_crop?: string;
+    border_crop?: string;
 
-  [key: string]: any;
+    [key: string]: any;
 }
 
 export class Prices implements IPrices {
-  usd?: string;
-  usd_foil?: string;
-  usd_etched?: string;
-  eur?: string;
-  eur_foil?: string;
-  tix?: string;
+    usd?: string;
+    usd_foil?: string;
+    usd_etched?: string;
+    eur?: string;
+    eur_foil?: string;
+    tix?: string;
 
-  [key: string]: any;
+    [key: string]: any;
 
-  constructor(data?: IPrices) {
-    if (data) {
-      for (var property in data) {
-        if (data.hasOwnProperty(property))
-          (<any>this)[property] = (<any>data)[property];
-      }
+    constructor(data?: IPrices) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
     }
-  }
 
-  init(_data?: any) {
-    if (_data) {
-      for (var property in _data) {
-        if (_data.hasOwnProperty(property)) this[property] = _data[property];
-      }
-      this.usd = _data['usd'];
-      this.usd_foil = _data['usd_foil'];
-      this.usd_etched = _data['usd_etched'];
-      this.eur = _data['eur'];
-      this.eur_foil = _data['eur_foil'];
-      this.tix = _data['tix'];
+    init(_data?: any) {
+        if (_data) {
+            for (var property in _data) {
+                if (_data.hasOwnProperty(property))
+                    this[property] = _data[property];
+            }
+            this.usd = _data["usd"];
+            this.usd_foil = _data["usd_foil"];
+            this.usd_etched = _data["usd_etched"];
+            this.eur = _data["eur"];
+            this.eur_foil = _data["eur_foil"];
+            this.tix = _data["tix"];
+        }
     }
-  }
 
-  static fromJS(data: any): Prices {
-    data = typeof data === 'object' ? data : {};
-    let result = new Prices();
-    result.init(data);
-    return result;
-  }
-
-  toJSON(data?: any) {
-    data = typeof data === 'object' ? data : {};
-    for (var property in this) {
-      if (this.hasOwnProperty(property)) data[property] = this[property];
+    static fromJS(data: any): Prices {
+        data = typeof data === 'object' ? data : {};
+        let result = new Prices();
+        result.init(data);
+        return result;
     }
-    data['usd'] = this.usd;
-    data['usd_foil'] = this.usd_foil;
-    data['usd_etched'] = this.usd_etched;
-    data['eur'] = this.eur;
-    data['eur_foil'] = this.eur_foil;
-    data['tix'] = this.tix;
-    return data;
-  }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        for (var property in this) {
+            if (this.hasOwnProperty(property))
+                data[property] = this[property];
+        }
+        data["usd"] = this.usd;
+        data["usd_foil"] = this.usd_foil;
+        data["usd_etched"] = this.usd_etched;
+        data["eur"] = this.eur;
+        data["eur_foil"] = this.eur_foil;
+        data["tix"] = this.tix;
+        return data;
+    }
 }
 
 export interface IPrices {
-  usd?: string;
-  usd_foil?: string;
-  usd_etched?: string;
-  eur?: string;
-  eur_foil?: string;
-  tix?: string;
+    usd?: string;
+    usd_foil?: string;
+    usd_etched?: string;
+    eur?: string;
+    eur_foil?: string;
+    tix?: string;
 
-  [key: string]: any;
+    [key: string]: any;
+}
+
+export enum Anonymous {
+    _100_CONTINUE = "100 CONTINUE",
+    _101_SWITCHING_PROTOCOLS = "101 SWITCHING_PROTOCOLS",
+    _102_PROCESSING = "102 PROCESSING",
+    _103_EARLY_HINTS = "103 EARLY_HINTS",
+    _103_CHECKPOINT = "103 CHECKPOINT",
+    _200_OK = "200 OK",
+    _201_CREATED = "201 CREATED",
+    _202_ACCEPTED = "202 ACCEPTED",
+    _203_NON_AUTHORITATIVE_INFORMATION = "203 NON_AUTHORITATIVE_INFORMATION",
+    _204_NO_CONTENT = "204 NO_CONTENT",
+    _205_RESET_CONTENT = "205 RESET_CONTENT",
+    _206_PARTIAL_CONTENT = "206 PARTIAL_CONTENT",
+    _207_MULTI_STATUS = "207 MULTI_STATUS",
+    _208_ALREADY_REPORTED = "208 ALREADY_REPORTED",
+    _226_IM_USED = "226 IM_USED",
+    _300_MULTIPLE_CHOICES = "300 MULTIPLE_CHOICES",
+    _301_MOVED_PERMANENTLY = "301 MOVED_PERMANENTLY",
+    _302_FOUND = "302 FOUND",
+    _302_MOVED_TEMPORARILY = "302 MOVED_TEMPORARILY",
+    _303_SEE_OTHER = "303 SEE_OTHER",
+    _304_NOT_MODIFIED = "304 NOT_MODIFIED",
+    _305_USE_PROXY = "305 USE_PROXY",
+    _307_TEMPORARY_REDIRECT = "307 TEMPORARY_REDIRECT",
+    _308_PERMANENT_REDIRECT = "308 PERMANENT_REDIRECT",
+    _400_BAD_REQUEST = "400 BAD_REQUEST",
+    _401_UNAUTHORIZED = "401 UNAUTHORIZED",
+    _402_PAYMENT_REQUIRED = "402 PAYMENT_REQUIRED",
+    _403_FORBIDDEN = "403 FORBIDDEN",
+    _404_NOT_FOUND = "404 NOT_FOUND",
+    _405_METHOD_NOT_ALLOWED = "405 METHOD_NOT_ALLOWED",
+    _406_NOT_ACCEPTABLE = "406 NOT_ACCEPTABLE",
+    _407_PROXY_AUTHENTICATION_REQUIRED = "407 PROXY_AUTHENTICATION_REQUIRED",
+    _408_REQUEST_TIMEOUT = "408 REQUEST_TIMEOUT",
+    _409_CONFLICT = "409 CONFLICT",
+    _410_GONE = "410 GONE",
+    _411_LENGTH_REQUIRED = "411 LENGTH_REQUIRED",
+    _412_PRECONDITION_FAILED = "412 PRECONDITION_FAILED",
+    _413_PAYLOAD_TOO_LARGE = "413 PAYLOAD_TOO_LARGE",
+    _413_REQUEST_ENTITY_TOO_LARGE = "413 REQUEST_ENTITY_TOO_LARGE",
+    _414_URI_TOO_LONG = "414 URI_TOO_LONG",
+    _414_REQUEST_URI_TOO_LONG = "414 REQUEST_URI_TOO_LONG",
+    _415_UNSUPPORTED_MEDIA_TYPE = "415 UNSUPPORTED_MEDIA_TYPE",
+    _416_REQUESTED_RANGE_NOT_SATISFIABLE = "416 REQUESTED_RANGE_NOT_SATISFIABLE",
+    _417_EXPECTATION_FAILED = "417 EXPECTATION_FAILED",
+    _418_I_AM_A_TEAPOT = "418 I_AM_A_TEAPOT",
+    _419_INSUFFICIENT_SPACE_ON_RESOURCE = "419 INSUFFICIENT_SPACE_ON_RESOURCE",
+    _420_METHOD_FAILURE = "420 METHOD_FAILURE",
+    _421_DESTINATION_LOCKED = "421 DESTINATION_LOCKED",
+    _422_UNPROCESSABLE_ENTITY = "422 UNPROCESSABLE_ENTITY",
+    _423_LOCKED = "423 LOCKED",
+    _424_FAILED_DEPENDENCY = "424 FAILED_DEPENDENCY",
+    _425_TOO_EARLY = "425 TOO_EARLY",
+    _426_UPGRADE_REQUIRED = "426 UPGRADE_REQUIRED",
+    _428_PRECONDITION_REQUIRED = "428 PRECONDITION_REQUIRED",
+    _429_TOO_MANY_REQUESTS = "429 TOO_MANY_REQUESTS",
+    _431_REQUEST_HEADER_FIELDS_TOO_LARGE = "431 REQUEST_HEADER_FIELDS_TOO_LARGE",
+    _451_UNAVAILABLE_FOR_LEGAL_REASONS = "451 UNAVAILABLE_FOR_LEGAL_REASONS",
+    _500_INTERNAL_SERVER_ERROR = "500 INTERNAL_SERVER_ERROR",
+    _501_NOT_IMPLEMENTED = "501 NOT_IMPLEMENTED",
+    _502_BAD_GATEWAY = "502 BAD_GATEWAY",
+    _503_SERVICE_UNAVAILABLE = "503 SERVICE_UNAVAILABLE",
+    _504_GATEWAY_TIMEOUT = "504 GATEWAY_TIMEOUT",
+    _505_HTTP_VERSION_NOT_SUPPORTED = "505 HTTP_VERSION_NOT_SUPPORTED",
+    _506_VARIANT_ALSO_NEGOTIATES = "506 VARIANT_ALSO_NEGOTIATES",
+    _507_INSUFFICIENT_STORAGE = "507 INSUFFICIENT_STORAGE",
+    _508_LOOP_DETECTED = "508 LOOP_DETECTED",
+    _509_BANDWIDTH_LIMIT_EXCEEDED = "509 BANDWIDTH_LIMIT_EXCEEDED",
+    _510_NOT_EXTENDED = "510 NOT_EXTENDED",
+    _511_NETWORK_AUTHENTICATION_REQUIRED = "511 NETWORK_AUTHENTICATION_REQUIRED",
+}
+
+export enum Anonymous2 {
+    _100_CONTINUE = "100 CONTINUE",
+    _101_SWITCHING_PROTOCOLS = "101 SWITCHING_PROTOCOLS",
+    _102_PROCESSING = "102 PROCESSING",
+    _103_EARLY_HINTS = "103 EARLY_HINTS",
+    _103_CHECKPOINT = "103 CHECKPOINT",
+    _200_OK = "200 OK",
+    _201_CREATED = "201 CREATED",
+    _202_ACCEPTED = "202 ACCEPTED",
+    _203_NON_AUTHORITATIVE_INFORMATION = "203 NON_AUTHORITATIVE_INFORMATION",
+    _204_NO_CONTENT = "204 NO_CONTENT",
+    _205_RESET_CONTENT = "205 RESET_CONTENT",
+    _206_PARTIAL_CONTENT = "206 PARTIAL_CONTENT",
+    _207_MULTI_STATUS = "207 MULTI_STATUS",
+    _208_ALREADY_REPORTED = "208 ALREADY_REPORTED",
+    _226_IM_USED = "226 IM_USED",
+    _300_MULTIPLE_CHOICES = "300 MULTIPLE_CHOICES",
+    _301_MOVED_PERMANENTLY = "301 MOVED_PERMANENTLY",
+    _302_FOUND = "302 FOUND",
+    _302_MOVED_TEMPORARILY = "302 MOVED_TEMPORARILY",
+    _303_SEE_OTHER = "303 SEE_OTHER",
+    _304_NOT_MODIFIED = "304 NOT_MODIFIED",
+    _305_USE_PROXY = "305 USE_PROXY",
+    _307_TEMPORARY_REDIRECT = "307 TEMPORARY_REDIRECT",
+    _308_PERMANENT_REDIRECT = "308 PERMANENT_REDIRECT",
+    _400_BAD_REQUEST = "400 BAD_REQUEST",
+    _401_UNAUTHORIZED = "401 UNAUTHORIZED",
+    _402_PAYMENT_REQUIRED = "402 PAYMENT_REQUIRED",
+    _403_FORBIDDEN = "403 FORBIDDEN",
+    _404_NOT_FOUND = "404 NOT_FOUND",
+    _405_METHOD_NOT_ALLOWED = "405 METHOD_NOT_ALLOWED",
+    _406_NOT_ACCEPTABLE = "406 NOT_ACCEPTABLE",
+    _407_PROXY_AUTHENTICATION_REQUIRED = "407 PROXY_AUTHENTICATION_REQUIRED",
+    _408_REQUEST_TIMEOUT = "408 REQUEST_TIMEOUT",
+    _409_CONFLICT = "409 CONFLICT",
+    _410_GONE = "410 GONE",
+    _411_LENGTH_REQUIRED = "411 LENGTH_REQUIRED",
+    _412_PRECONDITION_FAILED = "412 PRECONDITION_FAILED",
+    _413_PAYLOAD_TOO_LARGE = "413 PAYLOAD_TOO_LARGE",
+    _413_REQUEST_ENTITY_TOO_LARGE = "413 REQUEST_ENTITY_TOO_LARGE",
+    _414_URI_TOO_LONG = "414 URI_TOO_LONG",
+    _414_REQUEST_URI_TOO_LONG = "414 REQUEST_URI_TOO_LONG",
+    _415_UNSUPPORTED_MEDIA_TYPE = "415 UNSUPPORTED_MEDIA_TYPE",
+    _416_REQUESTED_RANGE_NOT_SATISFIABLE = "416 REQUESTED_RANGE_NOT_SATISFIABLE",
+    _417_EXPECTATION_FAILED = "417 EXPECTATION_FAILED",
+    _418_I_AM_A_TEAPOT = "418 I_AM_A_TEAPOT",
+    _419_INSUFFICIENT_SPACE_ON_RESOURCE = "419 INSUFFICIENT_SPACE_ON_RESOURCE",
+    _420_METHOD_FAILURE = "420 METHOD_FAILURE",
+    _421_DESTINATION_LOCKED = "421 DESTINATION_LOCKED",
+    _422_UNPROCESSABLE_ENTITY = "422 UNPROCESSABLE_ENTITY",
+    _423_LOCKED = "423 LOCKED",
+    _424_FAILED_DEPENDENCY = "424 FAILED_DEPENDENCY",
+    _425_TOO_EARLY = "425 TOO_EARLY",
+    _426_UPGRADE_REQUIRED = "426 UPGRADE_REQUIRED",
+    _428_PRECONDITION_REQUIRED = "428 PRECONDITION_REQUIRED",
+    _429_TOO_MANY_REQUESTS = "429 TOO_MANY_REQUESTS",
+    _431_REQUEST_HEADER_FIELDS_TOO_LARGE = "431 REQUEST_HEADER_FIELDS_TOO_LARGE",
+    _451_UNAVAILABLE_FOR_LEGAL_REASONS = "451 UNAVAILABLE_FOR_LEGAL_REASONS",
+    _500_INTERNAL_SERVER_ERROR = "500 INTERNAL_SERVER_ERROR",
+    _501_NOT_IMPLEMENTED = "501 NOT_IMPLEMENTED",
+    _502_BAD_GATEWAY = "502 BAD_GATEWAY",
+    _503_SERVICE_UNAVAILABLE = "503 SERVICE_UNAVAILABLE",
+    _504_GATEWAY_TIMEOUT = "504 GATEWAY_TIMEOUT",
+    _505_HTTP_VERSION_NOT_SUPPORTED = "505 HTTP_VERSION_NOT_SUPPORTED",
+    _506_VARIANT_ALSO_NEGOTIATES = "506 VARIANT_ALSO_NEGOTIATES",
+    _507_INSUFFICIENT_STORAGE = "507 INSUFFICIENT_STORAGE",
+    _508_LOOP_DETECTED = "508 LOOP_DETECTED",
+    _509_BANDWIDTH_LIMIT_EXCEEDED = "509 BANDWIDTH_LIMIT_EXCEEDED",
+    _510_NOT_EXTENDED = "510 NOT_EXTENDED",
+    _511_NETWORK_AUTHENTICATION_REQUIRED = "511 NETWORK_AUTHENTICATION_REQUIRED",
 }
 
 export class ApiException extends Error {
-  override message: string;
-  status: number;
-  response: string;
-  headers: { [key: string]: any };
-  result: any;
+    override message: string;
+    status: number;
+    response: string;
+    headers: { [key: string]: any; };
+    result: any;
 
-  constructor(
-    message: string,
-    status: number,
-    response: string,
-    headers: { [key: string]: any },
-    result: any
-  ) {
-    super();
+    constructor(message: string, status: number, response: string, headers: { [key: string]: any; }, result: any) {
+        super();
 
-    this.message = message;
-    this.status = status;
-    this.response = response;
-    this.headers = headers;
-    this.result = result;
-  }
+        this.message = message;
+        this.status = status;
+        this.response = response;
+        this.headers = headers;
+        this.result = result;
+    }
 
-  protected isApiException = true;
+    protected isApiException = true;
 
-  static isApiException(obj: any): obj is ApiException {
-    return obj.isApiException === true;
-  }
+    static isApiException(obj: any): obj is ApiException {
+        return obj.isApiException === true;
+    }
 }
 
-function throwException(
-  message: string,
-  status: number,
-  response: string,
-  headers: { [key: string]: any },
-  result?: any
-): Observable<any> {
-  if (result !== null && result !== undefined) return _observableThrow(result);
-  else
-    return _observableThrow(
-      new ApiException(message, status, response, headers, null)
-    );
+function throwException(message: string, status: number, response: string, headers: { [key: string]: any; }, result?: any): Observable<any> {
+    if (result !== null && result !== undefined)
+        return _observableThrow(result);
+    else
+        return _observableThrow(new ApiException(message, status, response, headers, null));
 }
 
 function blobToText(blob: any): Observable<string> {
-  return new Observable<string>((observer: any) => {
-    if (!blob) {
-      observer.next('');
-      observer.complete();
-    } else {
-      let reader = new FileReader();
-      reader.onload = (event) => {
-        observer.next((event.target as any).result);
-        observer.complete();
-      };
-      reader.readAsText(blob);
-    }
-  });
+    return new Observable<string>((observer: any) => {
+        if (!blob) {
+            observer.next("");
+            observer.complete();
+        } else {
+            let reader = new FileReader();
+            reader.onload = event => {
+                observer.next((event.target as any).result);
+                observer.complete();
+            };
+            reader.readAsText(blob);
+        }
+    });
 }

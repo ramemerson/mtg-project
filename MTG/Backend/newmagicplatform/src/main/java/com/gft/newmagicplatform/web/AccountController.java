@@ -29,19 +29,6 @@ public class AccountController {
 
     AccountService accountService;
 
-    // @GetMapping("/")
-    // public String getAccountPage(HttpServletRequest request, Model model) {
-    // HttpSession session = request.getSession(false);
-
-    // if (session != null && session.getAttribute("user") != null) {
-    // Account user = (Account) session.getAttribute("user");
-    // model.addAttribute("user", user);
-    // return "accountpage";
-    // }
-
-    // return "redirect:/startup/";
-    // }
-
     @PostMapping("/create")
     public Account create(@RequestBody AccountDto accountDto) {
         return accountService.createAccount(accountDto);

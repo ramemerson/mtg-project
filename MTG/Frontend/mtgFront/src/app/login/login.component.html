@@ -1,7 +1,18 @@
 <div class="login-wrapper">
-    <form (ngSubmit)="onSubmit()">
-        <input type="text" placeholder="Username" [(ngModel)]="username" name="username">
-        <input type="password" placeholder="Password" [(ngModel)]="password" name="password">
-        <button type="submit">Login</button>
+    <form (ngSubmit)="checkUserLogin()">
+
+        <div class="column full-center mt-15 mb-15">
+            <input type="text" placeholder="Username" pInputText [(ngModel)]="username" name="username"
+                [ngClass]="{'ng-invalid': usernameInvalid}" required>
+        </div>
+        <div class="column full-center">
+            <input type="password" placeholder="Password" pInputText [(ngModel)]="password" name="password"
+                [ngClass]="{'ng-invalid': passwordInvalid}" required>
+        </div>
+        <div class="column full-center mt-15 mb-15">
+            <button pButton icon="pi pi-sign-in" label="Login"></button>
+        </div>
+        <p-messages class="column full-center mt-15 mb-15" *ngIf="usernameInvalid || passwordInvalid"
+            [value]="[{severity:'warn', detail:'Incorrect Username or Password'}]" [closable]="false"></p-messages>
     </form>
 </div>

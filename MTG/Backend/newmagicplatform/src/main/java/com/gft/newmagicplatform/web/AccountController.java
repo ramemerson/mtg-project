@@ -63,4 +63,10 @@ public class AccountController {
     public boolean accountExists(@RequestParam String username) {
         return accountService.accountExists(username);
     }
+
+    @GetMapping("/emailExists")
+    public boolean emailExists(@RequestParam String email) {
+        return accountService.emailExists(email);
+    }
+
 }

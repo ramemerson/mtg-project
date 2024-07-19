@@ -1,5 +1,5 @@
 @import "primeng/resources/primeng.css";
-@import "primeng/resources/themes/lara-light-blue/theme.css";
+@import "primeng/resources/themes/aura-dark-amber/theme.css";
 
 html,
 body,
@@ -119,4 +119,14 @@ app-root {
     background-position: center;
     width: 100%;
     opacity: 0.8;
+}
+
+html,
+body {
+    height: 100%;
+}
+
+body {
+    margin: 0;
+    font-family: Roboto, "Helvetica Neue", sans-serif;
 }

@@ -111,4 +111,11 @@ public class AccountServiceImpl implements AccountService {
         return accountRepo.save(account);
     }
 
+    @Override
+    public boolean emailExists(String email) {
+        return getAccounts().stream()
+                .filter(account -> email.equalsIgnoreCase(account.getEmail()))
+                .anyMatch(account -> true);
+    }
+
 }

@@ -1,27 +1,51 @@
-import { Component } from '@angular/core';
-import { AccountControllerClient, AccountDto } from '../services/mtg.service';
-import { debounceTime, distinctUntilChanged } from 'rxjs';
+import { Component, OnInit } from '@angular/core';
+import { AccountControllerClient, IAccountDto } from '../services/mtg.service';
+import { catchError, debounceTime, map, of, switchMap } from 'rxjs';
 import { Router } from '@angular/router';
+import {
+  AbstractControl,
+  FormBuilder,
+  FormGroup,
+  Validators,
+} from '@angular/forms';
 
 @Component({
   selector: 'app-register',
   templateUrl: './register.component.html',
   styleUrl: './register.component.scss',
 })
-export class RegisterComponent {
-  account: AccountDto = new AccountDto();
-
-  userDoesntExist: boolean = true;
-  emailDoesntExist: boolean = true;
+export class RegisterComponent implements OnInit {
+  registerForm: FormGroup = new FormGroup({});
 
   constructor(
     private accountControllerClient: AccountControllerClient,
-    private router: Router
+    private router: Router,
+    private fb: FormBuilder
   ) {}
 
+  ngOnInit() {
+    this.registerForm = this.fb.group({
+      firstname: ['', Validators.required],
+      lastname: ['', Validators.required],
+      username: [
+        '',
+        [Validators.required],
+        [this.usernameValidator.bind(this)],
+      ],
+      password: ['', Validators.required],
+      email: [
+        '',
+        [Validators.required, Validators.email],
+        [this.emailValidator.bind(this)],
+      ],
+      birthday: ['', Validators.required],
+    });
+  }
+
   registerUser() {
-    if (!this.userDoesntExist && !this.emailDoesntExist) {
-      this.accountControllerClient.create(this.account).subscribe({
+    const account: IAccountDto = this.registerForm.value as IAccountDto;
+    if (this.registerForm.valid) {
+      this.accountControllerClient.create(account).subscribe({
         next: () => {
           console.log('Account created');
           this.router.navigate(['frontpage']);
@@ -34,37 +58,23 @@ export class RegisterComponent {
     }
   }
 
-  checkUsername(username: string): void {
-    console.log('Checking if username exists', username);
-
-    this.accountControllerClient
-      .accountExists(username)
-      .pipe(debounceTime(300), distinctUntilChanged())
-      .subscribe({
-        next: (response) => {
-          this.userDoesntExist = response;
-        },
-        error: (error) => {
-          console.log('Username is already taken', error);
-          this.userDoesntExist = true;
-        },
-      });
+  usernameValidator(control: AbstractControl) {
+    return control.valueChanges.pipe(
+      debounceTime(700),
+      switchMap((username) =>
+        this.accountControllerClient.accountExists(username)
+      ),
+      map((response) => (response ? null : { usernameTaken: true })),
+      catchError((error) => of({ usernameTaken: true }))
+    );
   }
 
-  checkEmailIsTaken(email: string): void {
-    console.log('Checking if email is taken', email);
-
-    this.accountControllerClient
-      .emailExists(email)
-      .pipe(debounceTime(300), distinctUntilChanged())
-      .subscribe({
-        next: (response) => {
-          this.emailDoesntExist = response;
-        },
-        error: (error) => {
-          console.log('Email is already taken', error);
-          this.emailDoesntExist = true;
-        },
-      });
+  emailValidator(control: AbstractControl) {
+    return control.valueChanges.pipe(
+      debounceTime(700),
+      switchMap((email) => this.accountControllerClient.emailExists(email)),
+      map((response) => (response ? null : { emailTaken: true })),
+      catchError((error) => of({ emailTaken: true }))
+    );
   }
 }

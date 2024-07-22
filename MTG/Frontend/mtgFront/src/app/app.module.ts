@@ -4,6 +4,7 @@ import { CommonModule } from '@angular/common';
 import { provideHttpClient } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
+import { ReactiveFormsModule } from '@angular/forms';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -43,6 +44,7 @@ import { FrontpageComponent } from './frontpage/frontpage.component';
     MessagesModule,
     MessageModule,
     CalendarModule,
+    ReactiveFormsModule,
   ],
   providers: [
     provideHttpClient(),

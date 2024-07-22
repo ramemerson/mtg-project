@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.Optional;
 
 import com.gft.newmagicplatform.entity.Account;
-import com.gft.newmagicplatform.pojo.AccountDto;
 
 public interface AccountService {
     Account save(Account account);
@@ -23,7 +22,8 @@ public interface AccountService {
 
     Account unwrapAccount(Optional<Account> entity, Long id);
 
-    Account createAccount(AccountDto accountDto);
+    Account createAccount(String firstname, String lastname, String username, String password, String email,
+            String birthday);
 
     boolean emailExists(String email);
 

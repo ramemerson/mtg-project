@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import lombok.AllArgsConstructor;
 
 import com.gft.newmagicplatform.entity.Account;
-import com.gft.newmagicplatform.pojo.AccountDto;
 import com.gft.newmagicplatform.service.AccountService;
 
 @Controller
@@ -30,8 +29,14 @@ public class AccountController {
     AccountService accountService;
 
     @PostMapping("/create")
-    public Account create(@RequestBody AccountDto accountDto) {
-        return accountService.createAccount(accountDto);
+    public Account create(
+            @RequestParam String firstname,
+            @RequestParam String lastname,
+            @RequestParam String username,
+            @RequestParam String password,
+            @RequestParam String email,
+            @RequestParam String birthday) {
+        return accountService.createAccount(firstname, lastname, username, password, email, birthday);
     }
 
     @GetMapping("/getById")

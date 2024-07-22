@@ -1,33 +1,41 @@
 <div class="register-wrapper">
-    <form (ngSubmit)="registerUser()">
+    <form [formGroup]="registerForm" (ngSubmit)="registerUser()">
         <div class="column full-center mb-15 mt-15">
-            <input type="text" placeholder="Firstname" pInputText [(ngModel)]="account.firstname" name="firstname"
-                required>
-        </div>
-        <div class="column full-center mb-15 ">
-            <input type="text" placeholder="Lastname" pInputText [(ngModel)]="account.lastname" name="lastname"
-                required>
-        </div>
-        <div class="column full-center mb-15 ">
-            <input type="text" placeholder="Username" pInputText [(ngModel)]="account.username"
-                (ngModelChange)="checkUsername($event)" [ngClass]="{'ng-invalid': userDoesntExist}" name="username"
-                required>
-        </div>
-        <div class="column full-center mb-15 ">
-            <input type="text" placeholder="Password" pInputText [(ngModel)]="account.password" name="password"
-                required>
+            <input type="text" placeholder="Firstname" pInputText formControlName="firstname" required>
+            <div *ngIf="registerForm.controls.firstname.invalid && registerForm.controls.firstname.touched">
+                <p-message severity="error" text="Firstname is required"></p-message>
+            </div>
         </div>
         <div class="column full-center mb-15">
-            <input type="text" placeholder="Email" pInputText [(ngModel)]="account.email"
-                (ngModelChange)="checkEmailIsTaken($event)" name="email" [ngClass]="{'ng-invalid': emailDoesntExist}"
-                required>
+            <input type="text" placeholder="Lastname" pInputText formControlName="lastname" required>
+            <div *ngIf="registerForm.controls.lastname.invalid && registerForm.controls.lastname.touched">
+                <p-message severity="error" text="Lastname is required"></p-message>
+            </div>
         </div>
         <div class="column full-center mb-15">
-            <p-calendar [iconDisplay]="'input'" [showIcon]="true" [(ngModel)]="account.birthday" placeholder="Birthday"
-                name="birthday"></p-calendar>
+            <input type="text" placeholder="Username" pInputText formControlName="username" required>
+            <div *ngIf="registerForm.controls.username.errors?.usernameTaken">
+                <p-message severity="error" text="Username already taken"></p-message>
+            </div>
         </div>
         <div class="column full-center mb-15">
-            <button pButton icon="pi pi-user-plus" label="Register"></button>
+            <input type="password" placeholder="Password" pInputText formControlName="password" required>
+            <div *ngIf="registerForm.controls.password.invalid && registerForm.controls.password.touched">
+                <p-message severity="error" text="Password is required"></p-message>
+            </div>
+        </div>
+        <div class="column full-center mb-15">
+            <input type="email" placeholder="Email" pInputText formControlName="email" required>
+            <div *ngIf="registerForm.controls.email.errors?.emailTaken">
+                <p-message severity="error" text="Email already taken"></p-message>
+            </div>
+        </div>
+        <div class="column full-center mb-15">
+            <p-calendar [iconDisplay]="'input'" [showIcon]="true" formControlName="birthday"
+                placeholder="Birthday"></p-calendar>
+        </div>
+        <div class="column full-center mb-15">
+            <button pButton icon="pi pi-user-plus" label="Register" [disabled]="registerForm.invalid"></button>
         </div>
     </form>
 </div>

@@ -1,23 +1,36 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, map, Observable } from 'rxjs';
-import { LoginRegisterControllerClient, LoginRequest } from './mtg.service';
+import {
+  BehaviorSubject,
+  catchError,
+  map,
+  Observable,
+  switchMap,
+  throwError,
+} from 'rxjs';
+import {
+  Account,
+  AccountControllerClient,
+  LoginRegisterControllerClient,
+  LoginRequest,
+} from './mtg.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService {
+  private currentUserSubject: BehaviorSubject<Account | null>;
+  private currentUser: Observable<Account | null>;
 
-  private currentUserSubject: BehaviorSubject<any>;
-  private currentUser: Observable<any>;
-
-  constructor(private http: HttpClient) {
+  constructor(
+    private http: HttpClient,
+    private loginRegisterControllerClient: LoginRegisterControllerClient,
+    private accountControllerClient: AccountControllerClient
+  ) {
     const storedUser = localStorage.getItem('currentUser');
-
-    this.currentUserSubject = new BehaviorSubject<any>(
+    this.currentUserSubject = new BehaviorSubject<Account | null>(
       storedUser ? JSON.parse(storedUser) : null
     );
-
     this.currentUser = this.currentUserSubject.asObservable();
   }
 
@@ -25,21 +38,52 @@ export class AuthService {
     return this.currentUserSubject.value;
   }
 
-  login(username: string, password: string): Observable<any> {
-    return this.http
-      .post<any>('/api/authenticate', { username, password })
-      .pipe(
-        map((user) => {
-          localStorage.setItem('currentUser', JSON.stringify(user));
-          this.currentUserSubject.next(user);
-          return user;
-        })
-      );
+  public isAuthenticated(): boolean {
+    return this.currentUserSubject.value != null;
+  }
+
+  login(username: string, password: string): Observable<boolean> {
+    console.log('Attempting login for: ', username);
+    const loginRequest: LoginRequest = {
+      username,
+      password,
+
+      init: function (_data?: any): void {
+        this.username = _data?.username || '';
+        this.password = _data?.password || '';
+      },
+      toJSON: function () {
+        return {
+          username: this.username,
+          password: this.password,
+        };
+      },
+    };
+
+    return this.loginRegisterControllerClient.attempt(loginRequest).pipe(
+      switchMap((result) => {
+        if (result) {
+          return this.accountControllerClient.getByUsername(username).pipe(
+            map((user) => {
+              localStorage.setItem('currentUser', JSON.stringify(user));
+              this.currentUserSubject.next(user);
+              console.log('Successful login for: ', username);
+              return true;
+            })
+          );
+        } else {
+          return throwError(() => new Error('Invalid credentials'));
+        }
+      }),
+      catchError((error) => {
+        console.error('Login Error', error);
+        return throwError(() => new Error('Login failed'));
+      })
+    );
   }
 
   logout() {
     localStorage.removeItem('currentUser');
     this.currentUserSubject.next(null);
   }
-
 }

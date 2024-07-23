@@ -15,6 +15,7 @@ import { HeaderComponent } from './layout/header/header.component';
 import { FooterComponent } from './layout/footer/footer.component';
 import { LoginComponent } from './login/login.component';
 import { RegisterComponent } from './register/register.component';
+import { AuthGuard } from './guards/auth.guard';
 
 import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
@@ -23,6 +24,7 @@ import { MessagesModule } from 'primeng/messages';
 import { MessageModule } from 'primeng/message';
 import { CalendarModule } from 'primeng/calendar';
 import { FrontpageComponent } from './frontpage/frontpage.component';
+import { RouterModule } from '@angular/router';
 
 @NgModule({
   declarations: [
@@ -47,6 +49,7 @@ import { FrontpageComponent } from './frontpage/frontpage.component';
     ReactiveFormsModule,
   ],
   providers: [
+    AuthGuard,
     provideHttpClient(),
     importProvidersFrom(CommonModule, BrowserModule, AccountControllerClient),
     {

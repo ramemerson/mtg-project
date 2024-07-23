@@ -30,7 +30,7 @@ export class LoginComponent implements OnInit {
 
   ngOnInit(): void {}
 
-  checkUserLogin() {
+  public checkUserLogin() {
     this.usernameInvalid = false;
     this.passwordInvalid = false;
     this.loginError = false;
@@ -70,7 +70,7 @@ export class LoginComponent implements OnInit {
     });
   }
 
-  showError() {
+  public showError() {
     this.usernameInvalid = true;
     this.passwordInvalid = true;
     this.loginError = true;

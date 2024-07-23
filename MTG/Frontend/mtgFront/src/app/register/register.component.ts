@@ -53,7 +53,7 @@ export class RegisterComponent implements OnInit {
         .subscribe({
           next: () => {
             console.log('Account created');
-            this.router.navigate(['frontpage']);
+            this.router.navigate(['login']);
           },
           error: (error) => {
             console.log('Error creating account', error);

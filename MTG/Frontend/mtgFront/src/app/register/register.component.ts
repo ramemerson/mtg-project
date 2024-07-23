@@ -1,80 +1,116 @@
 import { Component, OnInit } from '@angular/core';
-import { AccountControllerClient, IAccountDto } from '../services/mtg.service';
-import { catchError, debounceTime, map, of, switchMap } from 'rxjs';
+import { Account, AccountControllerClient } from '../services/mtg.service';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import {
-  AbstractControl,
-  FormBuilder,
-  FormGroup,
-  Validators,
-} from '@angular/forms';
 
 @Component({
   selector: 'app-register',
   templateUrl: './register.component.html',
-  styleUrl: './register.component.scss',
+  styleUrls: ['./register.component.scss'],
 })
 export class RegisterComponent implements OnInit {
-  registerForm: FormGroup = new FormGroup({});
+  account: Account = new Account();
+  registerForm: FormGroup;
+  userExists: boolean = false;
+  emailExists: boolean = false;
+  errorMessage: string = '';
 
   constructor(
     private accountControllerClient: AccountControllerClient,
     private router: Router,
     private fb: FormBuilder
-  ) {}
-
-  ngOnInit() {
+  ) {
     this.registerForm = this.fb.group({
       firstname: ['', Validators.required],
       lastname: ['', Validators.required],
       username: [
         '',
-        [Validators.required],
-        [this.usernameValidator.bind(this)],
+        {
+          validators: [Validators.required],
+          asyncValidators: [],
+          updateOn: 'blur',
+        },
       ],
       password: ['', Validators.required],
-      email: [
-        '',
-        [Validators.required, Validators.email],
-        [this.emailValidator.bind(this)],
-      ],
+      email: ['', [Validators.required, Validators.email]],
       birthday: ['', Validators.required],
     });
   }
 
+  ngOnInit() {}
+
   registerUser() {
-    const account: IAccountDto = this.registerForm.value as IAccountDto;
-    if (this.registerForm.valid) {
-      this.accountControllerClient.create(account).subscribe({
-        next: () => {
-          console.log('Account created');
-          this.router.navigate(['frontpage']);
+    if (this.registerForm.valid && !this.userExists && !this.emailExists) {
+      this.accountControllerClient
+        .create(
+          this.registerForm.value.firstname,
+          this.registerForm.value.lastname,
+          this.registerForm.value.username,
+          this.registerForm.value.password,
+          this.registerForm.value.email,
+          this.formatDate(new Date(this.registerForm.value.birthday))
+        )
+        .subscribe({
+          next: () => {
+            console.log('Account created');
+            this.router.navigate(['frontpage']);
+          },
+          error: (error) => {
+            console.log('Error creating account', error);
+            this.errorMessage = 'Error creating account';
+          },
+        });
+    }
+  }
+
+  formatDate(date: Date): string {
+    const year = date.getFullYear();
+    const month = ('0' + (date.getMonth() + 1)).slice(-2);
+    const day = ('0' + date.getDate()).slice(-2);
+    return `${year}-${month}-${day}`;
+  }
+
+  checkUsername() {
+    const usernameControl = this.registerForm.controls['username'];
+    const username = usernameControl?.value;
+
+    if (username) {
+      this.accountControllerClient.accountExists(username).subscribe({
+        next: (exists) => {
+          this.userExists = exists;
+          if (exists) {
+            usernameControl?.setErrors({ usernameExists: true });
+          } else {
+            usernameControl?.setErrors(null);
+          }
         },
-        error: (error) => {
-          console.log('Error creating account', error);
-          alert('Error creating account');
+        error: () => {
+          this.userExists = false;
+          usernameControl?.setErrors(null);
         },
       });
     }
   }
 
-  usernameValidator(control: AbstractControl) {
-    return control.valueChanges.pipe(
-      debounceTime(700),
-      switchMap((username) =>
-        this.accountControllerClient.accountExists(username)
-      ),
-      map((response) => (response ? null : { usernameTaken: true })),
-      catchError((error) => of({ usernameTaken: true }))
-    );
-  }
+  emailCheck() {
+    const emailControl = this.registerForm.controls['email'];
+    const email = emailControl?.value;
 
-  emailValidator(control: AbstractControl) {
-    return control.valueChanges.pipe(
-      debounceTime(700),
-      switchMap((email) => this.accountControllerClient.emailExists(email)),
-      map((response) => (response ? null : { emailTaken: true })),
-      catchError((error) => of({ emailTaken: true }))
-    );
+    if (email) {
+      this.accountControllerClient.emailExists(email).subscribe({
+        next: (exists) => {
+          this.emailExists = exists;
+          if (exists) {
+            emailControl?.setErrors({ emailExists: true });
+          } else {
+            emailControl?.setErrors(null);
+          }
+        },
+        error: () => {
+          this.emailExists = false;
+          emailControl?.setErrors(null);
+        },
+      });
+    }
   }
 }

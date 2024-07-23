@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import com.gft.newmagicplatform.entity.Account;
 import com.gft.newmagicplatform.entity.Wallet;
 import com.gft.newmagicplatform.exception.UserNotFoundException;
+import com.gft.newmagicplatform.pojo.AccountDto;
 import com.gft.newmagicplatform.repository.AccountRepo;
 
 import jakarta.persistence.EntityNotFoundException;
@@ -44,7 +45,7 @@ public class AccountServiceImpl implements AccountService {
     @Override
     public boolean accountExists(String username) {
         for (Account accountToSearch : getAccounts()) {
-            if (accountToSearch.getUsername().equalsIgnoreCase(getAcountByUsername(username).getUsername())) {
+            if (accountToSearch.getUsername().equalsIgnoreCase(username)) {
                 return true;
             }
         }
@@ -90,16 +91,15 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public Account createAccount(String firstname, String lastname, String username, String password, String email,
-            String birthday) {
+    public Account createAccount(AccountDto accountDto) {
         Account account = new Account();
-        account.setFirstname(firstname);
-        account.setLastname(lastname);
-        account.setUsername(username);
-        account.setPassword(password);
-        account.setEmail(email);
+        account.setFirstname(accountDto.getFirstname());
+        account.setLastname(accountDto.getLastname());
+        account.setUsername(accountDto.getUsername());
+        account.setPassword(accountDto.getPassword());
+        account.setEmail(accountDto.getEmail());
         try {
-            account.setBirthday(birthday);
+            account.setBirthday(accountDto.getBirthday());
         } catch (ParseException e) {
             e.printStackTrace();
         }

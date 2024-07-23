@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import lombok.AllArgsConstructor;
 
 import com.gft.newmagicplatform.entity.Account;
+import com.gft.newmagicplatform.pojo.AccountDto;
 import com.gft.newmagicplatform.service.AccountService;
 
 @Controller
@@ -36,7 +37,7 @@ public class AccountController {
             @RequestParam String password,
             @RequestParam String email,
             @RequestParam String birthday) {
-        return accountService.createAccount(firstname, lastname, username, password, email, birthday);
+        return accountService.createAccount(new AccountDto(firstname, lastname, username, password, email, birthday));
     }
 
     @GetMapping("/getById")

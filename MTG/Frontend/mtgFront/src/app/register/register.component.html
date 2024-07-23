@@ -1,41 +1,51 @@
 <div class="register-wrapper">
     <form [formGroup]="registerForm" (ngSubmit)="registerUser()">
-        <div class="column full-center mb-15 mt-15">
-            <input type="text" placeholder="Firstname" pInputText formControlName="firstname" required>
-            <div *ngIf="registerForm.controls.firstname.invalid && registerForm.controls.firstname.touched">
-                <p-message severity="error" text="Firstname is required"></p-message>
-            </div>
+        <div class="column full-center">
+            <input class="mt-15" type="text" placeholder="Firstname" pInputText formControlName="firstname" required />
+        </div>
+        <div class="column full-center">
+            <input class="mt-15" type="text" placeholder="Lastname" pInputText formControlName="lastname" required />
+        </div>
+        <div class="column full-center">
+            <input class="mt-15" type="text" placeholder="Username" pInputText formControlName="username"
+                (blur)="checkUsername()" required />
+        </div>
+        <div class="column full-center">
+            <input class="mt-15" type="password" placeholder="Password" pInputText formControlName="password"
+                required />
+        </div>
+        <div class="column full-center">
+            <input class="mt-15" type="email" placeholder="Email" pInputText formControlName="email"
+                (blur)="emailCheck()" required />
         </div>
         <div class="column full-center mb-15">
-            <input type="text" placeholder="Lastname" pInputText formControlName="lastname" required>
-            <div *ngIf="registerForm.controls.lastname.invalid && registerForm.controls.lastname.touched">
-                <p-message severity="error" text="Lastname is required"></p-message>
-            </div>
-        </div>
-        <div class="column full-center mb-15">
-            <input type="text" placeholder="Username" pInputText formControlName="username" required>
-            <div *ngIf="registerForm.controls.username.errors?.usernameTaken">
-                <p-message severity="error" text="Username already taken"></p-message>
-            </div>
-        </div>
-        <div class="column full-center mb-15">
-            <input type="password" placeholder="Password" pInputText formControlName="password" required>
-            <div *ngIf="registerForm.controls.password.invalid && registerForm.controls.password.touched">
-                <p-message severity="error" text="Password is required"></p-message>
-            </div>
-        </div>
-        <div class="column full-center mb-15">
-            <input type="email" placeholder="Email" pInputText formControlName="email" required>
-            <div *ngIf="registerForm.controls.email.errors?.emailTaken">
-                <p-message severity="error" text="Email already taken"></p-message>
-            </div>
-        </div>
-        <div class="column full-center mb-15">
-            <p-calendar [iconDisplay]="'input'" [showIcon]="true" formControlName="birthday"
+            <p-calendar class="mt-15" [iconDisplay]="'input'" [showIcon]="true" formControlName="birthday"
                 placeholder="Birthday"></p-calendar>
         </div>
-        <div class="column full-center mb-15">
+        <div class="column full-center">
             <button pButton icon="pi pi-user-plus" label="Register" [disabled]="registerForm.invalid"></button>
         </div>
     </form>
+
+    <div class="column full-center">
+        <div class="mt-15"
+            *ngIf="registerForm.controls['firstname'].invalid && registerForm.controls['firstname'].touched">
+            <p-message severity="warn" text="Firstname is required"></p-message>
+        </div>
+        <div class="mt-15"
+            *ngIf="registerForm.controls['lastname'].invalid && registerForm.controls['lastname'].touched">
+            <p-message severity="warn" text=" Lastname is required"></p-message>
+        </div>
+        <div class="mt-15" *ngIf="userExists">
+            <p-message severity="warn" text=" Username already taken"></p-message>
+        </div>
+        <div class="mb-15 mt-15"
+            *ngIf="registerForm.controls['password'].invalid && registerForm.controls['password'].touched">
+            <p-message severity="warn" text=" Password is required"></p-message>
+        </div>
+        <div class="mb-15 mt-15" *ngIf="emailExists">
+            <p-message severity="warn" text="Email already taken"></p-message>
+        </div>
+    </div>
+
 </div>

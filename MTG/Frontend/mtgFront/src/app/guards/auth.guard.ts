@@ -12,10 +12,7 @@ export class AuthGuard implements CanActivate {
   canActivate(): Observable<boolean> {
     return this.authService.getAuthStatus().pipe(
       tap((isAuthenticated) => {
-        if (isAuthenticated) {
-          console.log('User Authenticated', this.authService.currentUserValue);
-        } else {
-          console.log('User is not authenticated');
+        if (!isAuthenticated) {
           this.router.navigate(['/login']);
         }
       }),

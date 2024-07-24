@@ -73,7 +73,7 @@ export class AuthService {
                 localStorage.setItem('currentUser', JSON.stringify(user));
               }
               this.currentUserSubject.next(user);
-              console.log('Successful login for: ', username);
+              console.log('Successful login for: ', user);
               return true;
             })
           );

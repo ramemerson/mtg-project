@@ -1,9 +1,14 @@
-<div *ngIf="!isLoggedIn" class="wrapper-header column full-center">
-    <h1 style="color: #fca600;">MTG - Card Trading Platform</h1>
-</div>
-
-<form (ngSubmit)="logoutUser()">
-    <div class="column full-center mt-15 mb-15 mr-15">
-        <button pButton icon="pi pi-sign-out" label=""></button>
+<header class="wrapper coloumn full-center">
+    <div>
+        <h1 *ngIf="!isLoggedIn" style="color: #fca600;">MTG - Card Trading Platform</h1>
+        <div *ngIf="isLoggedIn">
+            <button class="mr-15" (click)="goHome()" pButton icon="pi pi-home" label="Home"></button>
+            <button class="mr-15" (click)="goToBrowse()" pButton icon="pi pi-search" label="Browse"></button>
+            <button class="mr-15" (click)="goToTrade()" pButton icon="pi pi-bars" label="Trade"></button>
+            <button class="mr-15" (click)="goToAccount()" pButton icon="pi pi-user" label="Account"></button>
+            <button class="mr-15" (click)="logoutUser()" pButton icon="pi pi-sign-out" label="Logout">
+            </button>
+        </div>
     </div>
-</form>
+
+</header>

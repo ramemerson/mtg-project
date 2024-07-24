@@ -5,6 +5,9 @@ import { LoginComponent } from './login/login.component';
 import { RegisterComponent } from './register/register.component';
 import { FrontpageComponent } from './frontpage/frontpage.component';
 import { AuthGuard } from './guards/auth.guard';
+import { BrowseComponent } from './browse/browse.component';
+import { TradeComponent } from './trade/trade.component';
+import { AccountComponent } from './account/account.component';
 
 const routes: Routes = [
   { path: '', pathMatch: 'full', component: HomeComponent },
@@ -16,6 +19,9 @@ const routes: Routes = [
     component: FrontpageComponent,
     canActivate: [AuthGuard],
   },
+  { path: 'browse', component: BrowseComponent, canActivate: [AuthGuard] },
+  { path: 'trade', component: TradeComponent, canActivate: [AuthGuard] },
+  { path: 'account', component: AccountComponent, canActivate: [AuthGuard] },
 ];
 
 @NgModule({

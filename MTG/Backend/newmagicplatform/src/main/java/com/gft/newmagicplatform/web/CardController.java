@@ -26,7 +26,6 @@ public class CardController {
     @PostMapping("/save/{id}")
     public ResponseEntity<HttpStatus> saveCardToAccount(@PathVariable Long id, @RequestBody String cardId) {
         cardService.addCard(accountService.getAccountById(id), cardId);
-
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 

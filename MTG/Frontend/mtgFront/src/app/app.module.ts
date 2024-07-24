@@ -15,7 +15,6 @@ import { HeaderComponent } from './layout/header/header.component';
 import { FooterComponent } from './layout/footer/footer.component';
 import { LoginComponent } from './login/login.component';
 import { RegisterComponent } from './register/register.component';
-import { AuthGuard } from './guards/auth.guard';
 
 import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
@@ -24,7 +23,9 @@ import { MessagesModule } from 'primeng/messages';
 import { MessageModule } from 'primeng/message';
 import { CalendarModule } from 'primeng/calendar';
 import { FrontpageComponent } from './frontpage/frontpage.component';
-import { AuthService } from './services/auth.service';
+import { BrowseComponent } from './browse/browse.component';
+import { TradeComponent } from './trade/trade.component';
+import { AccountComponent } from './account/account.component';
 
 @NgModule({
   declarations: [
@@ -35,6 +36,9 @@ import { AuthService } from './services/auth.service';
     LoginComponent,
     RegisterComponent,
     FrontpageComponent,
+    BrowseComponent,
+    TradeComponent,
+    AccountComponent,
   ],
   imports: [
     BrowserModule,

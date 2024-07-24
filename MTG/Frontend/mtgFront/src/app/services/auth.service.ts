@@ -27,7 +27,9 @@ export class AuthService {
     private loginRegisterControllerClient: LoginRegisterControllerClient,
     private accountControllerClient: AccountControllerClient
   ) {
-    const storedUser = localStorage.getItem('currentUser');
+    const storedUser = this.isBrowser()
+      ? localStorage.getItem('currentUser')
+      : null;
     this.currentUserSubject = new BehaviorSubject<Account | null>(
       storedUser ? JSON.parse(storedUser) : null
     );
@@ -38,8 +40,10 @@ export class AuthService {
     return this.currentUserSubject.value;
   }
 
-  public isAuthenticated(): boolean {
-    return this.currentUserSubject.value != null;
+  public getAuthStatus(): Observable<boolean> {
+    return this.currentUserSubject
+      .asObservable()
+      .pipe(map((user) => user != null));
   }
 
   login(username: string, password: string): Observable<boolean> {
@@ -65,7 +69,9 @@ export class AuthService {
         if (result) {
           return this.accountControllerClient.getByUsername(username).pipe(
             map((user) => {
-              localStorage.setItem('currentUser', JSON.stringify(user));
+              if (this.isBrowser()) {
+                localStorage.setItem('currentUser', JSON.stringify(user));
+              }
               this.currentUserSubject.next(user);
               console.log('Successful login for: ', username);
               return true;
@@ -83,7 +89,14 @@ export class AuthService {
   }
 
   logout() {
-    localStorage.removeItem('currentUser');
+    if (this.isBrowser()) {
+      console.log('Logging out: ', this.currentUserValue);
+      localStorage.removeItem('currentUser');
+    }
     this.currentUserSubject.next(null);
+  }
+
+  isBrowser(): boolean {
+    return typeof window !== 'undefined';
   }
 }

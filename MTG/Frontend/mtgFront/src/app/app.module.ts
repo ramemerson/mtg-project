@@ -1,7 +1,7 @@
 import { importProvidersFrom, NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { CommonModule } from '@angular/common';
-import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClient, withFetch } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { ReactiveFormsModule } from '@angular/forms';
@@ -24,7 +24,7 @@ import { MessagesModule } from 'primeng/messages';
 import { MessageModule } from 'primeng/message';
 import { CalendarModule } from 'primeng/calendar';
 import { FrontpageComponent } from './frontpage/frontpage.component';
-import { RouterModule } from '@angular/router';
+import { AuthService } from './services/auth.service';
 
 @NgModule({
   declarations: [
@@ -49,8 +49,7 @@ import { RouterModule } from '@angular/router';
     ReactiveFormsModule,
   ],
   providers: [
-    AuthGuard,
-    provideHttpClient(),
+    provideHttpClient(withFetch()),
     importProvidersFrom(CommonModule, BrowserModule, AccountControllerClient),
     {
       provide: API_BASE_URL,

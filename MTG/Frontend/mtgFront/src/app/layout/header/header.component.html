@@ -1,3 +1,9 @@
-<div class="wrapper-header column full-center">
+<div *ngIf="!isLoggedIn" class="wrapper-header column full-center">
     <h1 style="color: #fca600;">MTG - Card Trading Platform</h1>
 </div>
+
+<form (ngSubmit)="logoutUser()">
+    <div class="column full-center mt-15 mb-15 mr-15">
+        <button pButton icon="pi pi-sign-out" label=""></button>
+    </div>
+</form>

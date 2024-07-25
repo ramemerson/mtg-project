@@ -32,7 +32,6 @@ public class JsonDataLoader {
     private Map<String, Card> idIndex;
     private Map<String, List<Card>> nameIndex;
 
-   
     public JsonDataLoader(String filePath) throws IOException {
         loadJsonData(filePath);
         buildIndexes();
@@ -95,7 +94,7 @@ public class JsonDataLoader {
         Pattern pattern = Pattern.compile(Pattern.quote(name), Pattern.CASE_INSENSITIVE);
         int numThreads = Runtime.getRuntime().availableProcessors();
         ExecutorService executor = Executors.newFixedThreadPool(numThreads);
-        
+
         try {
             List<Callable<List<Card>>> tasks = new ArrayList<>();
             int chunkSize = Math.max(1, cardList.size() / numThreads);

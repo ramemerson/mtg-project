@@ -22,13 +22,12 @@ import jakarta.servlet.http.HttpSession;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
-
 @Controller
 @RequestMapping("/trade")
 public class TradeController {
 
-   private JsonDataLoader jsonDataLoader = null;
-   private AccountService accountServiceImpl;
+    private JsonDataLoader jsonDataLoader = null;
+    private AccountService accountServiceImpl;
 
     public TradeController(AccountService accountService) {
         accountServiceImpl = accountService;
@@ -38,7 +37,7 @@ public class TradeController {
             e.printStackTrace();
         }
     }
-    
+
     @GetMapping("/")
     public String getTradePage(HttpServletRequest request, Model model) {
 
@@ -81,15 +80,12 @@ public class TradeController {
                 Card card = jsonDataLoader.findCardByIdParrallel(cardId);
                 userCards.add(card);
             }
-            
+
             return new ResponseEntity<>(userCards, HttpStatus.OK);
         }
 
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        
+
     }
-    
-
-
 
 }

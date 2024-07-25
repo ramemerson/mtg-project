@@ -5,11 +5,11 @@ import lombok.Getter;
 @Getter
 public class ImageUris {
     
-    private String small;
-    private String normal;
-    private String large;
-    private String png;
-    private String art_crop;
-    private String border_crop;
+    private Card small;
+    private Card normal;
+    private Card large;
+    private Card png;
+    private Card art_crop;
+    private Card border_crop;
 
 }

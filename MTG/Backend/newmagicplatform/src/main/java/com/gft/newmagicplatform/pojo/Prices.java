@@ -5,11 +5,11 @@ import lombok.Getter;
 @Getter
 public class Prices {
 
-    private String usd;
-    private String usd_foil;
-    private String usd_etched;
-    private String eur;
-    private String eur_foil;
-    private String tix;
+    private Card usd;
+    private Card usd_foil;
+    private Card usd_etched;
+    private Card eur;
+    private Card eur_foil;
+    private Card tix;
 
 }

@@ -8,7 +8,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class Card {
-    
+
     @SerializedName("id")
     private String id;
 
@@ -23,7 +23,7 @@ public class Card {
 
     @SerializedName("set_id")
     private String set_id;
-    
+
     @SerializedName("name")
     private String name;
 
@@ -65,7 +65,7 @@ public class Card {
 
     @SerializedName("keywords")
     private String[] keywords;
-    
+
     @SerializedName("set")
     private String set;
 
@@ -80,6 +80,5 @@ public class Card {
 
     @SerializedName("prices")
     private Prices prices;
-
 
 }

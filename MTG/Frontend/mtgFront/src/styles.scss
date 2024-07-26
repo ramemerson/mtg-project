@@ -1,5 +1,6 @@
 @import "primeng/resources/primeng.css";
 @import "primeng/resources/themes/aura-dark-amber/theme.css";
+@import "primeflex/primeflex.css";
 
 html,
 body,
@@ -58,61 +59,8 @@ app-root {
     flex-direction: column;
 }
 
-.mr-15 {
-    margin-right: 15px;
-}
-
-.mt-15 {
-    margin-top: 15px;
-}
-
-.mt-25 {
-    margin-top: 25px;
-}
-
-.mb-15 {
-    margin-bottom: 15px;
-}
-
-.mb-25 {
-    margin-bottom: 25px;
-}
-
-.wrap {
-    flex-wrap: wrap;
-}
-
-.gap-05 {
-    gap: 0.5rem;
-}
-
-.gap-1 {
-    gap: 1rem;
-}
-
-.gap-2 {
-    gap: 2rem;
-}
-
-.space-between {
-    justify-content: space-between;
-}
-
-.align-center {
-    align-items: center;
-}
-
-.justify-center {
-    justify-content: center;
-}
-
-.full-center {
-    align-items: center;
-    justify-content: center;
-}
-
-.hidden {
-    display: none;
+.background-color {
+    background-color: aliceblue;
 }
 
 .background {
@@ -123,14 +71,4 @@ app-root {
     background-position: center;
     width: 100%;
     opacity: 0.8;
-}
-
-html,
-body {
-    height: 100%;
-}
-
-body {
-    margin: 0;
-    font-family: Roboto, "Helvetica Neue", sans-serif;
 }

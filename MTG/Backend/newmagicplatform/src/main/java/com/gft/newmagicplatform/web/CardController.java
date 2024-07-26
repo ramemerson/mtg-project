@@ -13,10 +13,13 @@ import org.springframework.web.bind.annotation.RestController;
 import com.gft.newmagicplatform.service.AccountService;
 import com.gft.newmagicplatform.service.CardService;
 
+import lombok.AllArgsConstructor;
+
 @Controller
 @RequestMapping("/card")
 @RestController("/card")
 @CrossOrigin(origins = "http://localhost:4200")
+@AllArgsConstructor
 public class CardController {
 
     CardService cardService;

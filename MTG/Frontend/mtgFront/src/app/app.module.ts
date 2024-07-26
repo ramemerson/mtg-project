@@ -26,6 +26,12 @@ import { FrontpageComponent } from './frontpage/frontpage.component';
 import { BrowseComponent } from './browse/browse.component';
 import { TradeComponent } from './trade/trade.component';
 import { AccountComponent } from './account/account.component';
+import { CardModule } from 'primeng/card';
+import { DividerModule } from 'primeng/divider';
+import { ImageModule } from 'primeng/image';
+import { DataViewModule } from 'primeng/dataview';
+import { ProgressBarModule } from 'primeng/progressbar';
+
 
 @NgModule({
   declarations: [
@@ -51,6 +57,11 @@ import { AccountComponent } from './account/account.component';
     MessageModule,
     CalendarModule,
     ReactiveFormsModule,
+    CardModule,
+    DividerModule,
+    ImageModule,
+    DataViewModule,
+    ProgressBarModule,
   ],
   providers: [
     provideHttpClient(withFetch()),

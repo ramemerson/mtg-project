@@ -1,1 +1,41 @@
-<p>{{ name }}</p>
+<div class="flex flex-row justify-content-center align-items-center mx-3 mt-3">
+    <div>
+        <p-card>
+            <h2>{{ currentUser.firstname}} {{ currentUser.lastname }}</h2>
+            <p-divider />
+            <p>Username: {{ currentUser.username }}</p>
+            <p-divider />
+            <p>Email: {{ currentUser.email }}</p>
+            <p-divider />
+            <p>Birthday: {{ currentUser.birthdayStringFormatted }}</p>
+            <p-divider />
+            <p>Current Budget: €{{ currentUser.wallet!.budget }}</p>
+            <p-divider />
+            <p>Decks Owned: {{ currentUser.decks!.length }}</p>
+            <p-divider />
+            <p>Cards Owned: {{ accountCards.length }}</p>
+            <p-divider />
+            <p-button class="flex flex-column justify-content-center align-items-center">Edit Info</p-button>
+        </p-card>
+    </div>
+
+
+    <div class="mx-3">
+        <p-card>
+            <div class="pr-3">
+                <h2 class="justify-content-center align-items-center mb-3">Cards</h2>
+                <p-progressBar class="mt-3 mb-3" *ngIf=" waitingForCards" mode="indeterminate"
+                    [style]="{height: '6px'}" />
+                <div class="card-container overflow-auto" style="height: 360px;"> <!-- Adjust height as needed -->
+                    <div class="grid">
+                        <div class="col-4 mb-3" *ngFor="let card of accountCards">
+                            <img [src]="card.image_uris?.small" [alt]="card.name" class="w-full">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </p-card>
+    </div>
+
+
+</div>

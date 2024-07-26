@@ -1,51 +1,53 @@
-<div class="register-wrapper">
-    <form [formGroup]="registerForm" (ngSubmit)="registerUser()">
-        <div class="column full-center">
-            <input class="mt-15" type="text" placeholder="Firstname" pInputText formControlName="firstname" required />
-        </div>
-        <div class="column full-center">
-            <input class="mt-15" type="text" placeholder="Lastname" pInputText formControlName="lastname" required />
-        </div>
-        <div class="column full-center">
-            <input class="mt-15" type="text" placeholder="Username" pInputText formControlName="username"
-                (blur)="checkUsername()" required />
-        </div>
-        <div class="column full-center">
-            <input class="mt-15" type="password" placeholder="Password" pInputText formControlName="password"
-                required />
-        </div>
-        <div class="column full-center">
-            <input class="mt-15" type="email" placeholder="Email" pInputText formControlName="email"
-                (blur)="emailCheck()" required />
-        </div>
-        <div class="column full-center mb-15">
-            <p-calendar class="mt-15" [iconDisplay]="'input'" [showIcon]="true" formControlName="birthday"
-                placeholder="Birthday"></p-calendar>
-        </div>
-        <div class="column full-center">
-            <button pButton icon="pi pi-user-plus" label="Register" [disabled]="registerForm.invalid"></button>
-        </div>
-    </form>
+<p-card class="flex flex-column justify-content-center align-items-center mt-3">
+    <div class="register-wrapper">
+        <form [formGroup]="registerForm" (ngSubmit)="registerUser()">
+            <div class="flex flex-column justify-content-center align-items-center">
+                <input type="text" placeholder="Firstname" pInputText formControlName="firstname" required />
+            </div>
+            <div class="flex flex-column justify-content-center align-items-center">
+                <input class="mt-3" type="text" placeholder="Lastname" pInputText formControlName="lastname" required />
+            </div>
+            <div class="flex flex-column justify-content-center align-items-center">
+                <input class="mt-3" type="text" placeholder="Username" pInputText formControlName="username"
+                    (blur)="checkUsername()" required />
+            </div>
+            <div class="flex flex-column justify-content-center align-items-center">
+                <input class="mt-3" type="password" placeholder="Password" pInputText formControlName="password"
+                    required />
+            </div>
+            <div class="flex flex-column justify-content-center align-items-center">
+                <input class="mt-3" type="email" placeholder="Email" pInputText formControlName="email"
+                    (blur)="emailCheck()" required />
+            </div>
+            <div class="flex flex-column justify-content-center align-items-center mb-15">
+                <p-calendar class="mt-3" [iconDisplay]="'input'" [showIcon]="true" formControlName="birthday"
+                    placeholder="Birthday"></p-calendar>
+            </div>
+            <div class="flex flex-column justify-content-center align-items-center mt-3">
+                <button pButton icon="pi pi-user-plus" label="Register" [disabled]="registerForm.invalid"></button>
+            </div>
+        </form>
 
-    <div class="column full-center">
-        <div class="mt-15"
-            *ngIf="registerForm.controls['firstname'].invalid && registerForm.controls['firstname'].touched">
-            <p-message severity="warn" text="Firstname is required"></p-message>
+        <div class="flex flex-column justify-content-center align-items-center">
+            <div class="mt-3"
+                *ngIf="registerForm.controls['firstname'].invalid && registerForm.controls['firstname'].touched">
+                <p-message severity="warn" text="Firstname is required"></p-message>
+            </div>
+            <div class="mt-3"
+                *ngIf="registerForm.controls['lastname'].invalid && registerForm.controls['lastname'].touched">
+                <p-message severity="warn" text=" Lastname is required"></p-message>
+            </div>
+            <div class="mt-3" *ngIf="userExists">
+                <p-message severity="warn" text=" Username already taken"></p-message>
+            </div>
+            <div class="mt-3"
+                *ngIf="registerForm.controls['password'].invalid && registerForm.controls['password'].touched">
+                <p-message severity="warn" text=" Password is required"></p-message>
+            </div>
+            <div class="mt-3" *ngIf="emailExists">
+                <p-message severity="warn" text="Email already taken"></p-message>
+            </div>
         </div>
-        <div class="mt-15"
-            *ngIf="registerForm.controls['lastname'].invalid && registerForm.controls['lastname'].touched">
-            <p-message severity="warn" text=" Lastname is required"></p-message>
-        </div>
-        <div class="mt-15" *ngIf="userExists">
-            <p-message severity="warn" text=" Username already taken"></p-message>
-        </div>
-        <div class="mb-15 mt-15"
-            *ngIf="registerForm.controls['password'].invalid && registerForm.controls['password'].touched">
-            <p-message severity="warn" text=" Password is required"></p-message>
-        </div>
-        <div class="mb-15 mt-15" *ngIf="emailExists">
-            <p-message severity="warn" text="Email already taken"></p-message>
-        </div>
+
     </div>
-
-</div>
+</p-card>

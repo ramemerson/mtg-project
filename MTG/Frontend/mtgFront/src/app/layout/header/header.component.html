@@ -1,12 +1,12 @@
-<header class="wrapper coloumn full-center">
+<header class="wrapper coloumn justify-content-center align-items-center">
     <div>
         <h1 *ngIf="!isLoggedIn" style="color: #fca600;">MTG - Card Trading Platform</h1>
         <div *ngIf="isLoggedIn">
-            <button class="mr-15" (click)="goHome()" pButton icon="pi pi-home" label="Home"></button>
-            <button class="mr-15" (click)="goToBrowse()" pButton icon="pi pi-search" label="Browse"></button>
-            <button class="mr-15" (click)="goToTrade()" pButton icon="pi pi-bars" label="Trade"></button>
-            <button class="mr-15" (click)="goToAccount()" pButton icon="pi pi-user" label="Account"></button>
-            <button class="mr-15" (click)="logoutUser()" pButton icon="pi pi-sign-out" label="Logout">
+            <button class="mx-1" (click)="goHome()" pButton icon="pi pi-home" label="Home"></button>
+            <button class="mx-1" (click)="goToBrowse()" pButton icon="pi pi-search" label="Browse"></button>
+            <button class="mx-1" (click)="goToTrade()" pButton icon="pi pi-bars" label="Trade"></button>
+            <button class="mx-1" (click)="goToAccount()" pButton icon="pi pi-user" label="Account"></button>
+            <button class="mx-1" (click)="logoutUser()" pButton icon="pi pi-sign-out" label="Logout">
             </button>
         </div>
     </div>

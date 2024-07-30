@@ -1,11 +1,10 @@
 .card-container {
     width: 100%;
-    max-width: 400px;
+    max-width: 600px;
     /* Adjust based on your card size */
 }
 
-.card-container img {
-    max-width: 100%;
-    height: auto;
-    object-fit: contain;
+.images:hover {
+    opacity: 0.5;
+    cursor: pointer;
 }

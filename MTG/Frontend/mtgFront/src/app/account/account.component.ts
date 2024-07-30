@@ -21,6 +21,9 @@ export class AccountComponent implements OnInit {
   currentUser: Account = this.authService.currentUserValue;
   accountCards: Card[] = [];
   waitingForCards: boolean = true;
+  cardClicked: boolean = false;
+  currentCard?: Card = undefined;
+  editClicked: boolean = false;
 
   ngOnInit(): void {
     this.primeNgConfig.ripple = true;
@@ -32,17 +35,25 @@ export class AccountComponent implements OnInit {
   }
 
   loadCardsFromAccount() {
+    this.waitingForCards = true;
     this.cardService.loadCardsFromAccount(this.currentUser.id!).subscribe({
       next: (cards: Card[]) => {
+        this.accountCards = cards || [];
         this.accountCards = cards;
-        console.log(
-          'Cards Loaded for :',
-          (this.waitingForCards = false),
-          this.currentUser.username,
-          this.accountCards
-        );
+        this.waitingForCards = false;
+        console.log('Cards Loaded for:', this.currentUser.username);
+        console.log('Number of cards:', this.accountCards.length);
+        console.log('WaitingForCards: ', this.waitingForCards);
       },
-      error: (error) => console.error('Error loading cards:', error),
+      error: (error) => {
+        console.error('Error loading cards:', error);
+        this.waitingForCards = false;
+        this.accountCards = [];
+      },
+      complete: () => {
+        console.log('Card Loading Completed');
+        this.waitingForCards = false;
+      },
     });
   }
 }

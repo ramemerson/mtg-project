@@ -15,27 +15,57 @@
             <p-divider />
             <p>Cards Owned: {{ accountCards.length }}</p>
             <p-divider />
-            <p-button class="flex flex-column justify-content-center align-items-center">Edit Info</p-button>
+            <p-button class="flex flex-column justify-content-center align-items-center" (click)="editClicked = true"
+                icon="pi pi-user-edit" label="Update"></p-button>
+            <p-dialog [modal]="true" [draggable]="false" [resizable]="false" [(visible)]="editClicked"
+                header="Update User Details">
+            </p-dialog>
+
         </p-card>
     </div>
 
-
     <div class="mx-3">
         <p-card>
-            <div class="pr-3">
-                <h2 class="justify-content-center align-items-center mb-3">Cards</h2>
-                <p-progressBar class="mt-3 mb-3" *ngIf=" waitingForCards" mode="indeterminate"
-                    [style]="{height: '6px'}" />
-                <div class="card-container overflow-auto" style="height: 360px;"> <!-- Adjust height as needed -->
+            <div class="flex flex-row flex-wrap">
+                <h2 class=" flex justify-content-center align-items-center mb-3 mr-3">Cards</h2>
+                <p-button class="flex justify-content-center align-items-center mb-3 mr-3" icon="pi pi-plus-circle">
+                </p-button>
+                <p-button class="flex justify-content-center align-items-center mb-3" icon="pi pi-minus-circle">
+                </p-button>
+
+            </div>
+
+            <div *ngIf="waitingForCards">
+                <p-progressBar class="mt-3 mb-3" mode="indeterminate" [style]="{height: '6px'}" />
+            </div>
+
+            <div *ngIf="!waitingForCards">
+                <div class="card-container overflow-x-hidden" style="height: 360px;"> <!-- Adjust height as needed -->
                     <div class="grid">
-                        <div class="col-4 mb-3" *ngFor="let card of accountCards">
-                            <img [src]="card.image_uris?.small" [alt]="card.name" class="w-full">
+                        <div class="mr-4 col-3" *ngFor="let card of accountCards">
+                            <p-image class="images" [src]="card.image_uris?.small" [alt]="card.name"
+                                (click)="cardClicked = true; currentCard = card" />
                         </div>
                     </div>
+                </div>
+                <div *ngIf="accountCards.length === 0">
+                    <p>No cards in account</p>
                 </div>
             </div>
         </p-card>
     </div>
+</div>
 
-
+<div>
+    <p-dialog [modal]="true" [draggable]="false" [resizable]="false" [(visible)]="cardClicked">
+        <p-image [src]="currentCard?.image_uris?.normal"></p-image>
+        <p-divider />
+        <p>Price: €{{ currentCard?.prices?.eur }}</p>
+        <p-divider />
+        <p>Rarity: {{ currentCard?.rarity }}</p>
+        <p-divider />
+        <p>Release Date: {{ currentCard?.released_at }} </p>
+        <p-divider />
+        <p>Set: {{ currentCard?.set}} ({{ currentCard?.set_name }}) </p>
+    </p-dialog>
 </div>

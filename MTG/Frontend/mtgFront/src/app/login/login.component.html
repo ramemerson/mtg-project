@@ -1,6 +1,7 @@
 <p-card class="flex flex-column justify-content-center align-items-center mt-3">
     <div>
         <form (ngSubmit)="checkUserLogin()">
+            <h2 class="mb-3 mx-1">Login</h2>
             <div class="flex flex-column justify-content-center align-items-center mt-1">
                 <input type="text" placeholder="Username" pInputText [(ngModel)]="username" name="username"
                     [ngClass]="{'ng-invalid': usernameInvalid}" required>

@@ -31,7 +31,7 @@ import { DividerModule } from 'primeng/divider';
 import { ImageModule } from 'primeng/image';
 import { DataViewModule } from 'primeng/dataview';
 import { ProgressBarModule } from 'primeng/progressbar';
-
+import { DialogModule } from 'primeng/dialog';
 
 @NgModule({
   declarations: [
@@ -62,6 +62,7 @@ import { ProgressBarModule } from 'primeng/progressbar';
     ImageModule,
     DataViewModule,
     ProgressBarModule,
+    DialogModule,
   ],
   providers: [
     provideHttpClient(withFetch()),

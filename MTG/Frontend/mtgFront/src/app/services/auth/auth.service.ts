@@ -13,7 +13,7 @@ import {
   AccountControllerClient,
   LoginRegisterControllerClient,
   LoginRequest,
-} from './mtg.service';
+} from '../mtg.service';
 
 @Injectable({
   providedIn: 'root',

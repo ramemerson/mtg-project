@@ -18,7 +18,8 @@
             <p-button class="flex flex-column justify-content-center align-items-center" (click)="editClicked = true"
                 icon="pi pi-user-edit" label="Update"></p-button>
             <p-dialog [modal]="true" [draggable]="false" [resizable]="false" [(visible)]="editClicked"
-                header="Update User Details">
+                header="Edit User Details">
+                <app-edit *ngIf="editClicked"></app-edit>
             </p-dialog>
 
         </p-card>

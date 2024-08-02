@@ -1,7 +1,14 @@
 import { importProvidersFrom, NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { CommonModule } from '@angular/common';
-import { provideHttpClient, withFetch } from '@angular/common/http';
+import {
+  HTTP_INTERCEPTORS,
+  HttpClient,
+  HttpClientModule,
+  provideHttpClient,
+  withFetch,
+  withInterceptors,
+} from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { ReactiveFormsModule } from '@angular/forms';
@@ -32,6 +39,9 @@ import { ImageModule } from 'primeng/image';
 import { DataViewModule } from 'primeng/dataview';
 import { ProgressBarModule } from 'primeng/progressbar';
 import { DialogModule } from 'primeng/dialog';
+import { EditComponent } from './account/edit/edit.component';
+import { CacheService } from './services/cache/cache.service';
+import { cachingInterceptor } from './http-interceptors/http-interceptor';
 
 @NgModule({
   declarations: [
@@ -45,6 +55,7 @@ import { DialogModule } from 'primeng/dialog';
     BrowseComponent,
     TradeComponent,
     AccountComponent,
+    EditComponent,
   ],
   imports: [
     BrowserModule,
@@ -65,7 +76,8 @@ import { DialogModule } from 'primeng/dialog';
     DialogModule,
   ],
   providers: [
-    provideHttpClient(withFetch()),
+    CacheService,
+    provideHttpClient(withFetch(), withInterceptors([cachingInterceptor])),
     importProvidersFrom(CommonModule, BrowserModule, AccountControllerClient),
     {
       provide: API_BASE_URL,

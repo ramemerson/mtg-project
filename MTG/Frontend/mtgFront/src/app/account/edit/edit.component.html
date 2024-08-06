@@ -1,1 +1,13 @@
-<p>edit works!</p>
+<form [formGroup]="editGroup" (ngSubmit)="editUser()">
+    <div class="flex flex-column justify-content-center align-items-center">
+        <input type="text" [(ngModel)]="currentUser.username" placeholder="Username" pInputText
+            formControlName="username" required />
+    </div>
+    <div class="flex flex-column justify-content-center align-items-center">
+        <input class="mt-3" type="text" [(ngModel)]="currentUser.email" placeholder="Email" pInputText
+            formControlName="email" required />
+    </div>
+    <div class="flex flex-column justify-content-center align-items-center mt-3">
+        <button pButton icon="pi pi-user-edit" label="Submit"></button>
+    </div>
+</form>

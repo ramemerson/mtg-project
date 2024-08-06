@@ -2,9 +2,6 @@ import { importProvidersFrom, NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { CommonModule } from '@angular/common';
 import {
-  HTTP_INTERCEPTORS,
-  HttpClient,
-  HttpClientModule,
   provideHttpClient,
   withFetch,
   withInterceptors,

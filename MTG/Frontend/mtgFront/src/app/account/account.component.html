@@ -19,9 +19,8 @@
                 icon="pi pi-user-edit" label="Update"></p-button>
             <p-dialog [modal]="true" [draggable]="false" [resizable]="false" [(visible)]="editClicked"
                 header="Edit User Details">
-                <app-edit *ngIf="editClicked"></app-edit>
+                <app-edit></app-edit>
             </p-dialog>
-
         </p-card>
     </div>
 

@@ -4,6 +4,7 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Set;
 
 import org.hibernate.annotations.Fetch;
@@ -75,6 +76,14 @@ public class Account {
     public String getBirthdayStringFormatted() {
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
         return formatter.format(birthday);
+    }
+
+    public Set<String> getCards() {
+        return cards;
+    }
+
+    public void setCards(Set<String> cards) {
+        this.cards = cards;
     }
 
 }

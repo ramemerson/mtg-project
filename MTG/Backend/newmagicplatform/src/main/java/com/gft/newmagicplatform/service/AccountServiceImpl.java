@@ -17,7 +17,7 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 public class AccountServiceImpl implements AccountService {
 
-    AccountRepo accountRepo;
+    private AccountRepo accountRepo;
 
     @Override
     public Account save(Account account) {
@@ -73,18 +73,17 @@ public class AccountServiceImpl implements AccountService {
 
         if (existingUser.isPresent() && userById.isPresent()) {
 
-            Account account = existingUser.get();
+            Account oldAccount = existingUser.get();
             Account newAccount = userById.get();
 
-            account.setFirstname(newAccount.getFirstname());
-            account.setLastname(newAccount.getLastname());
-            account.setEmail(newAccount.getEmail());
-            account.setUsername(newAccount.getUsername());
-            account.setPassword(newAccount.getPassword());
-            account.setCards(newAccount.getCards());
-            account.setDecks(newAccount.getDecks());
-            account.setWallet(newAccount.getWallet());
-            accountRepo.save(account);
+            oldAccount.setFirstname(newAccount.getFirstname());
+            oldAccount.setLastname(newAccount.getLastname());
+            oldAccount.setEmail(newAccount.getEmail());
+            oldAccount.setUsername(newAccount.getUsername());
+            oldAccount.setPassword(newAccount.getPassword());
+            oldAccount.setDecks(newAccount.getDecks());
+            oldAccount.setWallet(newAccount.getWallet());
+            accountRepo.save(oldAccount);
         } else {
             throw new EntityNotFoundException("Account with ID " + id + " was not found.");
         }

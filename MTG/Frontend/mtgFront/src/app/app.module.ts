@@ -39,6 +39,8 @@ import { DialogModule } from 'primeng/dialog';
 import { EditComponent } from './account/edit/edit.component';
 import { CacheService } from './services/cache/cache.service';
 import { cachingInterceptor } from './http-interceptors/http-interceptor';
+import { ConfirmPopupModule } from 'primeng/confirmpopup';
+import { ConfirmationService } from 'primeng/api';
 
 @NgModule({
   declarations: [
@@ -71,8 +73,10 @@ import { cachingInterceptor } from './http-interceptors/http-interceptor';
     DataViewModule,
     ProgressBarModule,
     DialogModule,
+    ConfirmPopupModule,
   ],
   providers: [
+    ConfirmationService,
     CacheService,
     provideHttpClient(withFetch(), withInterceptors([cachingInterceptor])),
     importProvidersFrom(CommonModule, BrowserModule, AccountControllerClient),

@@ -1,8 +1,5 @@
 import { Injectable } from '@angular/core';
-import {
-  AccountControllerClient,
-  CardControllerClient,
-} from '../mtg.service';
+import { AccountControllerClient, CardControllerClient } from '../mtg.service';
 import { forkJoin, from, Observable, switchMap } from 'rxjs';
 import { Card, Cards } from 'scryfall-sdk';
 
@@ -10,10 +7,7 @@ import { Card, Cards } from 'scryfall-sdk';
   providedIn: 'root',
 })
 export class CardService {
-  constructor(
-    private accountClient: AccountControllerClient,
-    private cardClient: CardControllerClient
-  ) {}
+  constructor(private cardClient: CardControllerClient) {}
 
   getCard(id: string): Observable<Card> {
     return from(Cards.byId(id));

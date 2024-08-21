@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.gft.newmagicplatform.entity.Account;
+import com.gft.newmagicplatform.exception.UserNotFoundException;
+
 import jakarta.transaction.Transactional;
 
 @Service
@@ -32,13 +34,18 @@ public class CardServiceImpl implements CardService {
     }
 
     @Override
-    public boolean tradeCard(Account accountGiving, Account accountTaking, String cardId) {
-        if (accountGiving.getCards().contains(cardId)) {
-            deleteCardFromAccount(accountGiving, cardId);
-            addCardToAccount(accountTaking, cardId);
-            return true;
+    public boolean tradeCard(Account accountGiving, Account accountTaking, String cardId) throws UserNotFoundException {
+        Account giver = accountService.getAccountById(accountGiving.getId());
+        Account taker = accountService.getAccountById(accountTaking.getId());
+
+        if (!giver.getCards().contains(cardId)) {
+            return false;
         }
-        return false;
+
+        deleteCardFromAccount(giver, cardId);
+        addCardToAccount(taker, cardId);
+
+        return true;
     }
 
 }

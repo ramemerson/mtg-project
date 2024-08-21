@@ -1,5 +1,7 @@
 package com.gft.newmagicplatform.pojo;
 
+import org.apache.commons.lang3.builder.EqualsBuilder;
+
 import lombok.Getter;
 import lombok.Setter;
 
@@ -22,5 +24,20 @@ public class AccountDto {
         this.email = email;
         this.password = password;
         this.birthday = birthday;
+    }
+
+    public boolean equals(Object other) {
+        if (!getClass().equals(other.getClass())) {
+            return false;
+        }
+        AccountDto otherAccount = (AccountDto) other;
+        EqualsBuilder equalsBuilder = new EqualsBuilder();
+        equalsBuilder.append(firstname, otherAccount.firstname);
+        equalsBuilder.append(lastname, otherAccount.lastname);
+        equalsBuilder.append(username, otherAccount.username);
+        equalsBuilder.append(email, otherAccount.email);
+        equalsBuilder.append(password, otherAccount.password);
+        equalsBuilder.append(birthday, otherAccount.birthday);
+        return equalsBuilder.build();
     }
 }

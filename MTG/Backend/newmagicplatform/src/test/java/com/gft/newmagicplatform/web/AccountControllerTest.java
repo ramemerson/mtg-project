@@ -1,6 +1,8 @@
 package com.gft.newmagicplatform.web;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -62,6 +64,8 @@ public class AccountControllerTest {
 
         mockAccounts = Arrays.asList(mockAccount1, mockAccount2);
 
+        when(accountService.getAccounts()).thenReturn(mockAccounts);
+
         // Mocking the getById method to find accounts by a given id and return it
         Answer<Account> getById = new Answer<Account>() {
             @Override
@@ -108,10 +112,31 @@ public class AccountControllerTest {
                 throw new EntityNotFoundException();
             }
 
-            // Otherwise proceed as fi the update was successful
+            // Otherwise proceed as if the update was successful
             return null;
 
         }).when(accountService).updateAccount(anyLong(), any(Optional.class));
+
+        when(accountService.accountExists(anyString())).thenAnswer(invocation -> {
+            try {
+                getByUsername.answer(invocation);
+                return true;
+            } catch (Exception e) {
+                return false;
+            }
+        });
+
+        when(accountService.emailExists(anyString())).thenAnswer(invocation -> {
+            String email = invocation.getArgument(0);
+            try {
+                return mockAccounts.stream()
+                        .filter(account -> account.getEmail().equals(email))
+                        .findFirst()
+                        .isPresent();
+            } catch (Exception e) {
+                return false;
+            }
+        });
     }
 
     @Test
@@ -169,6 +194,42 @@ public class AccountControllerTest {
     @Test(expected = EntityNotFoundException.class)
     public void update_ShouldThrowException_WhenIdIsCorrectButAccountDoesntExist() {
         accountController.update(0L, Optional.empty());
+    }
+
+    @Test
+    public void delete_ShouldCallDelete_WhenAccountByIdIsFound() {
+        accountController.delete(0L);
+        verify(accountService, times(1)).deleteAccount(0L);
+    }
+
+    @Test
+    public void getAccount_ShouldReturnListOfAccounts() {
+        assertEquals(mockAccounts, accountController.getAccounts());
+        verify(accountService, times(1)).getAccounts();
+    }
+
+    @Test
+    public void accountExists_ShouldReturnTrue_IfAccountExists() {
+        assertTrue(accountController.accountExists("breezy"));
+        verify(accountService, times(1)).accountExists("breezy");
+    }
+
+    @Test
+    public void accountExists_ShouldReturnFalse_IfAccountDoesntExist() {
+        assertFalse(accountController.accountExists("falseUsername"));
+        verify(accountService, times(1)).accountExists("falseUsername");
+    }
+
+    @Test
+    public void emailExists_ShouldReturnTrue_IfEmailExists() {
+        assertTrue(accountController.emailExists("cmen@gft.com"));
+        verify(accountService, times(1)).emailExists("cmen@gft.com");
+    }
+
+    @Test
+    public void emailExists_ShouldReturnFalse_IfEmailDoesntExists() {
+        assertFalse(accountController.emailExists("nonExistant@false.com"));
+        verify(accountService, times(1)).emailExists("nonExistant@false.com");
     }
 
 }

@@ -8,7 +8,7 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 public class LoginServiceImpl implements LoginService {
 
-    AccountService accountService;
+    private AccountService accountService;
 
     @Override
     public boolean checkUsernamePassword(String username, String password) {

@@ -182,18 +182,18 @@ public class AccountControllerTest {
 
     @Test
     public void update_ShouldCallUpdateFunction_WhenInputtingCorrectIdAndAccountExists() {
-        accountController.update(0L, Optional.of(mockAccount1));
+        accountController.update(0L, mockAccount1);
         verify(accountService, times(1)).updateAccount(0L, Optional.of(mockAccount1));
     }
 
     @Test(expected = EntityNotFoundException.class)
     public void update_ShouldThrowException_WhenAcountByIdDoesntExist() {
-        accountController.update(66L, Optional.of(mockAccount1));
+        accountController.update(66L, mockAccount1);
     }
 
     @Test(expected = EntityNotFoundException.class)
     public void update_ShouldThrowException_WhenIdIsCorrectButAccountDoesntExist() {
-        accountController.update(0L, Optional.empty());
+        accountController.update(0L, null);
     }
 
     @Test

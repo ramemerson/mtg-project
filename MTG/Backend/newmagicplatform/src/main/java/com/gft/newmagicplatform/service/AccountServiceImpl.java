@@ -59,7 +59,7 @@ public class AccountServiceImpl implements AccountService {
                 return account;
             }
         }
-        return null;
+        throw new UserNotFoundException(username);
     }
 
     @Override

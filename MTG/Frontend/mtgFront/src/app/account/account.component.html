@@ -63,7 +63,15 @@
         <p-divider />
         <p>Set: {{ currentCard?.set}} ({{ currentCard?.set_name }}) </p>
         <p-divider />
-        <p-button class="flex flex-column justify-content-center align-items-center" icon="pi pi-trash"
-            label="Delete card" (click)="deleteCard()"></p-button>
+        <div class="flex justify-content-center align-items-center">
+            <p-button class="justify-content-center mx-3" icon=" pi pi-cart-minus" label="Put for sale"
+                (click)="putCardForSale()">
+            </p-button>
+            <p-button class="justify-content-center" icon="pi pi-trash" label="Delete card" severity="danger"
+                (click)="deleteCard()">
+            </p-button>
+        </div>
+
+
     </p-dialog>
 </div>

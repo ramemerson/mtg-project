@@ -6,7 +6,7 @@ import { RegisterComponent } from './register/register.component';
 import { FrontpageComponent } from './frontpage/frontpage.component';
 import { AuthGuard } from './guards/auth.guard';
 import { BrowseComponent } from './browse/browse.component';
-import { TradeComponent } from './trade/trade.component';
+import { TradeComponent } from './market/trade.component';
 import { AccountComponent } from './account/account.component';
 
 const routes: Routes = [

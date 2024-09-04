@@ -8,6 +8,8 @@ public interface CardService {
 
     public void addCardToAccount(Account account, String id);
 
+    public void putCardForSale(Account account, String id);
+
     public void deleteCardFromAccount(Account account, String id);
 
     public Set<String> getAllCardsFromAccount(Account account);

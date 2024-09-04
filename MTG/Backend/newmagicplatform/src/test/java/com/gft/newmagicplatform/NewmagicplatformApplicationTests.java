@@ -112,4 +112,93 @@ class NewmagicplatformApplicationTests {
 
 	}
 
+	@Test
+	public void testAccountDeletion() throws Exception {
+		// Creating an account in the db to delete
+		mockMvc.perform(MockMvcRequestBuilders.post("/account/create")
+				.param("firstname", "testFirstname")
+				.param("lastname", "testLastname")
+				.param("username", "testUsername")
+				.param("email", "test@email.com")
+				.param("password", "test123")
+				.param("birthday", "2000-12-12"))
+				.andExpect(status().isOk());
+
+		// Checking that the account exists in the server
+		MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get("/account/getByUsername?username=testUsername"))
+				.andExpect(status().isOk())
+				.andExpect(jsonPath("$.firstname").value("testFirstname"))
+				.andReturn();
+
+		// Converting JSON response to an Account object
+		String jsonResponse = result.getResponse().getContentAsString();
+		ObjectMapper objectMapper = new ObjectMapper();
+		Account account = objectMapper.readValue(jsonResponse, Account.class);
+
+		// Checking that the account object is the same as the one created
+		mockMvc.perform(MockMvcRequestBuilders.get("/account/getById?id=" + account.getId()))
+				.andExpect(status().isOk())
+				.andExpect(content().contentType(MediaType.APPLICATION_JSON))
+				.andExpect(jsonPath("$.firstname").value("testFirstname"));
+
+		// Delete account
+		mockMvc.perform(MockMvcRequestBuilders.delete("/account/delete?id=" + account.getId()))
+				.andExpect(status().isOk());
+	}
+
+	@Test
+	public void testGetAccountByUsername() throws Exception {
+		mockMvc.perform(MockMvcRequestBuilders.get("/account/getByUsername?username=breezy"))
+				.andExpect(status().isOk())
+				.andExpect(content().contentType(MediaType.APPLICATION_JSON))
+				.andExpect(jsonPath("$.firstname").value("Chris"))
+				.andExpect(jsonPath("$.lastname").value("Emerson"));
+	}
+
+	@Test
+	public void testUnsuccessfulGetAccountByUsername() throws Exception {
+		mockMvc.perform(MockMvcRequestBuilders.get("/account/getByUsername?username=nonExistantUser"))
+				.andExpect(status().isNotFound());
+	}
+
+	@Test
+	public void testGetAllAccounts() throws Exception {
+		mockMvc.perform(MockMvcRequestBuilders.get("/account/getAccounts"))
+				.andExpect(status().isOk())
+				.andExpect(content().contentType(MediaType.APPLICATION_JSON))
+				// Checking that the size of the returned list matched the actual list of
+				// accounts
+				.andExpect(jsonPath("$.length()").value(accountService.getAccounts().size()))
+				// Checking items in the list and if they matche the actual list
+				.andExpect(jsonPath("$.[0].id").value(1))
+				.andExpect(jsonPath("$[1].username").value("bagelz"));
+	}
+
+	@Test
+	public void testAccountExistsInDb() throws Exception {
+		mockMvc.perform(MockMvcRequestBuilders.get("/account/accountExists?username=breezy"))
+				.andExpect(status().isOk())
+				.andExpect(content().string("true"));
+	}
+
+	@Test
+	public void testAccountDoesntExistsInDb() throws Exception {
+		mockMvc.perform(MockMvcRequestBuilders.get("/account/accountExists?username=nonExistantUser"))
+				.andExpect(status().isOk())
+				.andExpect(content().string("false"));
+	}
+
+	@Test
+	public void testEmailExist() throws Exception {
+		mockMvc.perform(MockMvcRequestBuilders.get("/account/emailExists?email=hodd@gft.com"))
+				.andExpect(status().isOk())
+				.andExpect(content().string("true"));
+	}
+
+	@Test
+	public void testEmailDoesntExist() throws Exception {
+		mockMvc.perform(MockMvcRequestBuilders.get("/account/emailExists?email=random@false.com"))
+				.andExpect(status().isOk())
+				.andExpect(content().string("false"));
+	}
 }

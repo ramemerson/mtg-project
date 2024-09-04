@@ -48,4 +48,10 @@ public class CardServiceImpl implements CardService {
         return true;
     }
 
+    @Transactional
+    @Override
+    public void putCardForSale(Account account, String id) {
+        accountService.getAccountById(account.getId()).getCardsForSale().add(id);
+    }
+
 }

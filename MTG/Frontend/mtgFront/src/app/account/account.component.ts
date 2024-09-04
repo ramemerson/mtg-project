@@ -1,10 +1,9 @@
-import { AfterViewInit, Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { AuthService } from '../services/auth/auth.service';
 import { Account, CardControllerClient } from '../services/mtg.service';
-import { Card, Cards } from 'scryfall-sdk';
-import { from, Observable } from 'rxjs';
 import { CardService } from '../services/card/card.service';
 import { PrimeNGConfig } from 'primeng/api';
+import { Card } from '../carddata/card';
 
 @Component({
   selector: 'app-account',
@@ -25,15 +24,35 @@ export class AccountComponent implements OnInit {
   cardClicked: boolean = false;
   currentCard?: Card = undefined;
   editClicked: boolean = false;
-  deleteClicked: boolean = false;
 
   ngOnInit(): void {
     this.primeNgConfig.ripple = true;
     this.loadCardsFromAccount();
   }
 
-  getCard(id: string): Observable<Card> {
-    return from(Cards.byId(id));
+  putCardForSale() {
+    if (this.currentCard!.id && this.currentUser.id!) {
+      console.log(
+        'Putting card: ',
+        this.currentCard?.name,
+        ' From account: ',
+        this.currentUser.username,
+        ' for Sale'
+      );
+      this.cardController
+        .putForSale(this.currentCard!.id, this.currentUser.id!)
+        .subscribe({
+          next: (response) => {
+            console.log('Card Put for sale successful', response);
+            this.cardClicked = false;
+          },
+          error: (error) => {
+            console.log('Error putting card for sale:', error);
+          },
+        });
+    } else {
+      console.log('Cannot put card for sale, cardId or accountId missing');
+    }
   }
 
   loadCardsFromAccount() {

@@ -45,14 +45,13 @@ export class AccountControllerClient {
   }
 
   /**
-   * @param body (optional)
    * @return OK
    */
-  update(id: number, body: Account | undefined): Observable<void> {
-    let url_ = this.baseUrl + '/account/update/{id}?';
+  update(id: string, body: Account): Observable<void> {
+    let url_ = this.baseUrl + '/account/update/{id}';
     if (id === undefined || id === null)
-      throw new Error("The parameter 'id' must be defined and cannot be null.");
-    else url_ += 'id=' + encodeURIComponent('' + id) + '&';
+      throw new Error("The parameter 'id' must be defined.");
+    url_ = url_.replace('{id}', encodeURIComponent('' + id));
     url_ = url_.replace(/[?&]$/, '');
 
     const content_ = JSON.stringify(body);
@@ -105,6 +104,25 @@ export class AccountControllerClient {
       return blobToText(responseBlob).pipe(
         _observableMergeMap((_responseText: string) => {
           return _observableOf(null as any);
+        })
+      );
+    } else if (status === 404) {
+      return blobToText(responseBlob).pipe(
+        _observableMergeMap((_responseText: string) => {
+          let result404: any = null;
+          let resultData404 =
+            _responseText === ''
+              ? null
+              : JSON.parse(_responseText, this.jsonParseReviver);
+          result404 = resultData404 !== undefined ? resultData404 : <any>null;
+
+          return throwException(
+            'Not Found',
+            status,
+            _responseText,
+            _headers,
+            result404
+          );
         })
       );
     } else if (status !== 200 && status !== 204) {
@@ -222,6 +240,25 @@ export class AccountControllerClient {
           return _observableOf(result200);
         })
       );
+    } else if (status === 404) {
+      return blobToText(responseBlob).pipe(
+        _observableMergeMap((_responseText: string) => {
+          let result404: any = null;
+          let resultData404 =
+            _responseText === ''
+              ? null
+              : JSON.parse(_responseText, this.jsonParseReviver);
+          result404 = resultData404 !== undefined ? resultData404 : <any>null;
+
+          return throwException(
+            'Not Found',
+            status,
+            _responseText,
+            _headers,
+            result404
+          );
+        })
+      );
     } else if (status !== 200 && status !== 204) {
       return blobToText(responseBlob).pipe(
         _observableMergeMap((_responseText: string) => {
@@ -307,6 +344,25 @@ export class AccountControllerClient {
           return _observableOf(result200);
         })
       );
+    } else if (status === 404) {
+      return blobToText(responseBlob).pipe(
+        _observableMergeMap((_responseText: string) => {
+          let result404: any = null;
+          let resultData404 =
+            _responseText === ''
+              ? null
+              : JSON.parse(_responseText, this.jsonParseReviver);
+          result404 = resultData404 !== undefined ? resultData404 : <any>null;
+
+          return throwException(
+            'Not Found',
+            status,
+            _responseText,
+            _headers,
+            result404
+          );
+        })
+      );
     } else if (status !== 200 && status !== 204) {
       return blobToText(responseBlob).pipe(
         _observableMergeMap((_responseText: string) => {
@@ -386,6 +442,25 @@ export class AccountControllerClient {
               : JSON.parse(_responseText, this.jsonParseReviver);
           result200 = Account.fromJS(resultData200);
           return _observableOf(result200);
+        })
+      );
+    } else if (status === 404) {
+      return blobToText(responseBlob).pipe(
+        _observableMergeMap((_responseText: string) => {
+          let result404: any = null;
+          let resultData404 =
+            _responseText === ''
+              ? null
+              : JSON.parse(_responseText, this.jsonParseReviver);
+          result404 = resultData404 !== undefined ? resultData404 : <any>null;
+
+          return throwException(
+            'Not Found',
+            status,
+            _responseText,
+            _headers,
+            result404
+          );
         })
       );
     } else if (status !== 200 && status !== 204) {
@@ -474,6 +549,25 @@ export class AccountControllerClient {
           return _observableOf(result200);
         })
       );
+    } else if (status === 404) {
+      return blobToText(responseBlob).pipe(
+        _observableMergeMap((_responseText: string) => {
+          let result404: any = null;
+          let resultData404 =
+            _responseText === ''
+              ? null
+              : JSON.parse(_responseText, this.jsonParseReviver);
+          result404 = resultData404 !== undefined ? resultData404 : <any>null;
+
+          return throwException(
+            'Not Found',
+            status,
+            _responseText,
+            _headers,
+            result404
+          );
+        })
+      );
     } else if (status !== 200 && status !== 204) {
       return blobToText(responseBlob).pipe(
         _observableMergeMap((_responseText: string) => {
@@ -558,6 +652,25 @@ export class AccountControllerClient {
           result200 = resultData200 !== undefined ? resultData200 : <any>null;
 
           return _observableOf(result200);
+        })
+      );
+    } else if (status === 404) {
+      return blobToText(responseBlob).pipe(
+        _observableMergeMap((_responseText: string) => {
+          let result404: any = null;
+          let resultData404 =
+            _responseText === ''
+              ? null
+              : JSON.parse(_responseText, this.jsonParseReviver);
+          result404 = resultData404 !== undefined ? resultData404 : <any>null;
+
+          return throwException(
+            'Not Found',
+            status,
+            _responseText,
+            _headers,
+            result404
+          );
         })
       );
     } else if (status !== 200 && status !== 204) {
@@ -646,6 +759,25 @@ export class AccountControllerClient {
           return _observableOf(result200);
         })
       );
+    } else if (status === 404) {
+      return blobToText(responseBlob).pipe(
+        _observableMergeMap((_responseText: string) => {
+          let result404: any = null;
+          let resultData404 =
+            _responseText === ''
+              ? null
+              : JSON.parse(_responseText, this.jsonParseReviver);
+          result404 = resultData404 !== undefined ? resultData404 : <any>null;
+
+          return throwException(
+            'Not Found',
+            status,
+            _responseText,
+            _headers,
+            result404
+          );
+        })
+      );
     } else if (status !== 200 && status !== 204) {
       return blobToText(responseBlob).pipe(
         _observableMergeMap((_responseText: string) => {
@@ -716,6 +848,25 @@ export class AccountControllerClient {
       return blobToText(responseBlob).pipe(
         _observableMergeMap((_responseText: string) => {
           return _observableOf(null as any);
+        })
+      );
+    } else if (status === 404) {
+      return blobToText(responseBlob).pipe(
+        _observableMergeMap((_responseText: string) => {
+          let result404: any = null;
+          let resultData404 =
+            _responseText === ''
+              ? null
+              : JSON.parse(_responseText, this.jsonParseReviver);
+          result404 = resultData404 !== undefined ? resultData404 : <any>null;
+
+          return throwException(
+            'Not Found',
+            status,
+            _responseText,
+            _headers,
+            result404
+          );
         })
       );
     } else if (status !== 200 && status !== 204) {
@@ -896,6 +1047,85 @@ export class CardControllerClient {
   }
 
   protected processSave(response: HttpResponseBase): Observable<void> {
+    const status = response.status;
+    const responseBlob =
+      response instanceof HttpResponse
+        ? response.body
+        : (response as any).error instanceof Blob
+        ? (response as any).error
+        : undefined;
+
+    let _headers: any = {};
+    if (response.headers) {
+      for (let key of response.headers.keys()) {
+        _headers[key] = response.headers.get(key);
+      }
+    }
+    if (status === 200) {
+      return blobToText(responseBlob).pipe(
+        _observableMergeMap((_responseText: string) => {
+          return _observableOf(null as any);
+        })
+      );
+    } else if (status !== 200 && status !== 204) {
+      return blobToText(responseBlob).pipe(
+        _observableMergeMap((_responseText: string) => {
+          return throwException(
+            'An unexpected server error occurred.',
+            status,
+            _responseText,
+            _headers
+          );
+        })
+      );
+    }
+    return _observableOf(null as any);
+  }
+
+  /**
+   * @return OK
+   */
+  putForSale(cardId: string, accId: number): Observable<void> {
+    let url_ = this.baseUrl + '/card/putForSale?';
+    if (cardId === undefined || cardId === null)
+      throw new Error(
+        "The parameter 'cardId' must be defined and cannot be null."
+      );
+    else url_ += 'cardId=' + encodeURIComponent('' + cardId) + '&';
+    if (accId === undefined || accId === null)
+      throw new Error(
+        "The parameter 'accId' must be defined and cannot be null."
+      );
+    else url_ += 'accId=' + encodeURIComponent('' + accId) + '&';
+    url_ = url_.replace(/[?&]$/, '');
+
+    let options_: any = {
+      observe: 'response',
+      responseType: 'blob',
+      headers: new HttpHeaders({}),
+    };
+
+    return this.http
+      .request('get', url_, options_)
+      .pipe(
+        _observableMergeMap((response_: any) => {
+          return this.processPutForSale(response_);
+        })
+      )
+      .pipe(
+        _observableCatch((response_: any) => {
+          if (response_ instanceof HttpResponseBase) {
+            try {
+              return this.processPutForSale(response_ as any);
+            } catch (e) {
+              return _observableThrow(e) as any as Observable<void>;
+            }
+          } else return _observableThrow(response_) as any as Observable<void>;
+        })
+      );
+  }
+
+  protected processPutForSale(response: HttpResponseBase): Observable<void> {
     const status = response.status;
     const responseBlob =
       response instanceof HttpResponse

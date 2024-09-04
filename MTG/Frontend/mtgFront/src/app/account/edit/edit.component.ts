@@ -46,7 +46,7 @@ export class EditComponent implements OnInit {
     this.updatedAccount.email = this.email;
 
     this.accountClient
-      .update(this.currentUser.id!, this.updatedAccount)
+      .update(this.currentUser.id!.toString(), this.updatedAccount)
       .subscribe({
         next: () => {
           console.log('User updated successfully');

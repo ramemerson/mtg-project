@@ -40,4 +40,9 @@ public class CardController {
         return cardService.getAllCardsFromAccount(accountService.getAccountById(accId));
     }
 
+    @GetMapping("/putForSale")
+    public void putCardForSale(@RequestParam String cardId, @RequestParam Long accId) {
+        cardService.putCardForSale(accountService.getAccountById(accId), cardId);
+    }
+
 }

@@ -28,7 +28,7 @@ import { MessageModule } from 'primeng/message';
 import { CalendarModule } from 'primeng/calendar';
 import { FrontpageComponent } from './frontpage/frontpage.component';
 import { BrowseComponent } from './browse/browse.component';
-import { TradeComponent } from './trade/trade.component';
+import { TradeComponent } from './market/trade.component';
 import { AccountComponent } from './account/account.component';
 import { CardModule } from 'primeng/card';
 import { DividerModule } from 'primeng/divider';
@@ -41,6 +41,7 @@ import { CacheService } from './services/cache/cache.service';
 import { cachingInterceptor } from './http-interceptors/http-interceptor';
 import { ConfirmPopupModule } from 'primeng/confirmpopup';
 import { ConfirmationService } from 'primeng/api';
+import { TabViewModule } from 'primeng/tabview';
 
 @NgModule({
   declarations: [
@@ -74,6 +75,7 @@ import { ConfirmationService } from 'primeng/api';
     ProgressBarModule,
     DialogModule,
     ConfirmPopupModule,
+    TabViewModule,
   ],
   providers: [
     ConfirmationService,

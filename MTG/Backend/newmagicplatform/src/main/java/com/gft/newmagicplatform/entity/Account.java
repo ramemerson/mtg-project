@@ -9,6 +9,7 @@ import java.util.Set;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import jakarta.persistence.*;
@@ -20,6 +21,7 @@ import lombok.*;
 @Getter
 @NoArgsConstructor
 @Table(name = "account")
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Account {
 
     @Id
@@ -56,6 +58,13 @@ public class Account {
     @Column(name = "card_id")
     @Fetch(FetchMode.JOIN)
     private Set<String> cards;
+
+    @JsonIgnore
+    @ElementCollection
+    @CollectionTable(name = "account_cardsForSale", joinColumns = @JoinColumn(name = "account_id"))
+    @Column(name = "card_id")
+    @Fetch(FetchMode.JOIN)
+    private Set<String> cardsForSale;
 
     public Account(String firstName, String lastName, String username, String password, String birthday, String email)
             throws ParseException {

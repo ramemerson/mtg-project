@@ -1,12 +1,7 @@
 import { Component, EventEmitter, inject, OnInit, Output } from '@angular/core';
-import {
-  Account,
-  AccountControllerClient,
-  CardControllerClient,
-} from '../../services/mtg.service';
+import { Account, AccountControllerClient } from '../../services/mtg.service';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { AuthService } from '../../services/auth/auth.service';
-import { error } from 'console';
 
 @Component({
   selector: 'app-edit',
@@ -15,7 +10,6 @@ import { error } from 'console';
 })
 export class EditComponent implements OnInit {
   private authService = inject(AuthService);
-  private cardClient = inject(CardControllerClient);
   private accountClient = inject(AccountControllerClient);
 
   updatedAccount: Account = new Account();

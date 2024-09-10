@@ -2,14 +2,51 @@
     <p-card>
         <p-tabView>
             <p-tabPanel header="Buy">
-                <h3>
-                    Your Budget: {{ budget }}
-                </h3>
+                <h3>All Cards Currently For Sale:</h3>
+
+                <div>
+                    <p-card>
+                        <div>
+                            <div class="card-container overflow-x-hidden" style="height: 360px;">
+                                <!-- Adjust height as needed -->
+                                <div class="grid">
+                                    <div class="mr-6 mb-3" *ngFor="let card of allCardsForSale">
+                                        <p-image class="images" [src]="card.image_uris?.small" [alt]="card.name"
+                                            (click)="cardClicked = true; currentCard = card" />
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </p-card>
+                </div>
             </p-tabPanel>
             <p-tabPanel header="Sell">
-                <p>
-                    sell panel
-                </p>
+                <h3>Your Cards</h3>
+                <p-tabView>
+                    <p-tabPanel header="For Sale">
+                        <div class="card-container overflow-x-hidden" style="height: 360px;">
+                            <!-- Adjust height as needed -->
+                            <div class="grid">
+                                <div class="mr-6 mb-3" *ngFor="let card of currentUserCardsForSale">
+                                    <p-image class="images" [src]="card.image_uris?.small" [alt]="card.name"
+                                        (click)="cardClickedForSale = true; currentCard = card" />
+                                </div>
+                            </div>
+                        </div>
+                    </p-tabPanel>
+                    <p-tabPanel header="Not For Sale">
+                        <div class="card-container overflow-x-hidden" style="height: 360px;">
+                            <!-- Adjust height as needed -->
+                            <div class="grid">
+                                <div class="mr-6 mb-3" *ngFor="let card of currentUserCardsNotForSale">
+                                    <p-image class="images" [src]="card.image_uris?.small" [alt]="card.name"
+                                        (click)="cardClickedNotForSale = true; currentCard = card" />
+                                </div>
+                            </div>
+                        </div>
+                    </p-tabPanel>
+                </p-tabView>
             </p-tabPanel>
             <p-tabPanel header="Trade">
                 <p>
@@ -18,4 +55,67 @@
             </p-tabPanel>
         </p-tabView>
     </p-card>
+</div>
+
+<div>
+    <p-dialog [modal]="true" [draggable]="false" [resizable]="false" [(visible)]="cardClicked" focusOnShow="false">
+        <p-image [src]="currentCard?.image_uris?.normal"></p-image>
+        <p-divider />
+        <p>Price: €{{ currentCard?.prices?.eur }}</p>
+        <p-divider />
+        <p>Rarity: {{ currentCard?.rarity }}</p>
+        <p-divider />
+        <p>Release Date: {{ currentCard?.released_at }} </p>
+        <p-divider />
+        <p>Set: {{ currentCard?.set}} ({{ currentCard?.set_name }}) </p>
+        <p-divider />
+        <p>Sold By: {{ currentCard?.soldBy }}</p>
+        <p-divider />
+        <div class="flex justify-content-center align-items-center">
+            <p-button class="justify-content-center mx-3" icon=" pi pi-shopping-cart" label="Buy Card"
+                (click)="buyCard()">
+            </p-button>
+        </div>
+    </p-dialog>
+    <p-dialog [modal]="true" [draggable]="false" [resizable]="false" [(visible)]="cardClickedForSale"
+        focusOnShow="false">
+        <p-image [src]="currentCard?.image_uris?.normal"></p-image>
+        <p-divider />
+        <p>Price: €{{ currentCard?.prices?.eur }}</p>
+        <p-divider />
+        <p>Rarity: {{ currentCard?.rarity }}</p>
+        <p-divider />
+        <p>Release Date: {{ currentCard?.released_at }} </p>
+        <p-divider />
+        <p>Set: {{ currentCard?.set}} ({{ currentCard?.set_name }}) </p>
+        <p-divider />
+        <p>Sold By: {{ currentCard?.soldBy }}</p>
+        <p-divider />
+        <div class="flex justify-content-center align-items-center">
+            <p-button severity="danger" class="justify-content-center mx-3" icon=" pi pi-cart-minus"
+                label="Remove Card From Sale" (click)="toggleSaleStatus()">
+            </p-button>
+        </div>
+    </p-dialog>
+    <p-dialog [modal]="true" [draggable]="false" [resizable]="false" [(visible)]="cardClickedNotForSale"
+        focusOnShow="false">
+        <p-image [src]="currentCard?.image_uris?.normal"></p-image>
+        <p-divider />
+        <p>Price: €{{ currentCard?.prices?.eur }}</p>
+        <p-divider />
+        <p>Rarity: {{ currentCard?.rarity }}</p>
+        <p-divider />
+        <p>Release Date: {{ currentCard?.released_at }} </p>
+        <p-divider />
+        <p>Set: {{ currentCard?.set}} ({{ currentCard?.set_name }}) </p>
+        <p-divider />
+        <p>Sold By: {{ currentCard?.soldBy }}</p>
+        <p-divider />
+        <div class="flex justify-content-center align-items-center">
+            <p-button class="justify-content-center mx-3" icon=" pi pi-cart-plus" label="Put Card For Sale"
+                (click)="toggleSaleStatus()">
+            </p-button>
+        </div>
+    </p-dialog>
+
 </div>

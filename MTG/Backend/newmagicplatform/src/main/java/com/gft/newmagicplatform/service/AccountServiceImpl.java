@@ -104,6 +104,7 @@ public class AccountServiceImpl implements AccountService {
         }
 
         Wallet wallet = new Wallet();
+        wallet.setBudget(0.0);
         wallet.setAccount(account);
         account.setWallet(wallet);
 

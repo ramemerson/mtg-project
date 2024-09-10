@@ -8,7 +8,7 @@ public interface CardService {
 
     public void addCardToAccount(Account account, String id);
 
-    public void putCardForSale(Account account, String id);
+    public void toggleSaleStatus(Account account, String id);
 
     public void deleteCardFromAccount(Account account, String id);
 
@@ -16,4 +16,5 @@ public interface CardService {
 
     public boolean tradeCard(Account accountGiving, Account accountTaking, String cardId);
 
+    public Set<String> getCardsForSale(Account account);
 }

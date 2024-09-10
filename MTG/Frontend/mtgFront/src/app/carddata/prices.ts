@@ -1,8 +1,8 @@
 export interface Prices {
-  usd: Number;
-  usd_foil: Number;
-  usd_etched: Number;
-  eur: Number;
-  eur_foil: Number;
-  tix: Number;
+  usd: number;
+  usd_foil: number;
+  usd_etched: number;
+  eur: number;
+  eur_foil: number;
+  tix: number;
 }

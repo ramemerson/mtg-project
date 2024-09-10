@@ -1,9 +1,14 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { AuthService } from '../services/auth/auth.service';
-import { Account, CardControllerClient } from '../services/mtg.service';
+import {
+  Account,
+  CardControllerClient,
+  WalletControllerClient,
+} from '../services/mtg.service';
 import { CardService } from '../services/card/card.service';
 import { PrimeNGConfig } from 'primeng/api';
 import { Card } from '../carddata/card';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-account',
@@ -15,44 +20,29 @@ export class AccountComponent implements OnInit {
   private cardService = inject(CardService);
   private cardController = inject(CardControllerClient);
   private primeNgConfig = inject(PrimeNGConfig);
-
-  constructor() {}
+  private walletController = inject(WalletControllerClient);
 
   currentUser: Account = this.authService.currentUserValue;
+  currentUserObservable$: Observable<Account | null> =
+    this.authService.currentUserObservable;
+
   accountCards: Card[] = [];
+  accountCardsForSale: Card[] = [];
+
   waitingForCards: boolean = true;
   cardClicked: boolean = false;
   currentCard?: Card = undefined;
   editClicked: boolean = false;
+  currentCardForSale: boolean = false;
+  budgetToAdd!: number;
+  currentBudget?: number = this.currentUser.wallet?.budget;
+  addBudgetClicked = false;
+
+  constructor() {}
 
   ngOnInit(): void {
     this.primeNgConfig.ripple = true;
     this.loadCardsFromAccount();
-  }
-
-  putCardForSale() {
-    if (this.currentCard!.id && this.currentUser.id!) {
-      console.log(
-        'Putting card: ',
-        this.currentCard?.name,
-        ' From account: ',
-        this.currentUser.username,
-        ' for Sale'
-      );
-      this.cardController
-        .putForSale(this.currentCard!.id, this.currentUser.id!)
-        .subscribe({
-          next: (response) => {
-            console.log('Card Put for sale successful', response);
-            this.cardClicked = false;
-          },
-          error: (error) => {
-            console.log('Error putting card for sale:', error);
-          },
-        });
-    } else {
-      console.log('Cannot put card for sale, cardId or accountId missing');
-    }
   }
 
   loadCardsFromAccount() {
@@ -94,6 +84,27 @@ export class AccountComponent implements OnInit {
         });
     } else {
       console.error('Cannot delete card: missing cardId or userId');
+    }
+  }
+
+  addMoneyToAccount() {
+    console.log(
+      'Attempting to add budget to account',
+      this.currentUser.username
+    );
+    if (this.currentUser) {
+      this.walletController
+        .addBudget(this.budgetToAdd, this.currentUser.id!)
+        .subscribe(() => {
+          console.log(
+            'Budget added to account: ',
+            this.currentUser.firstname,
+            ' with amount: ',
+            this.budgetToAdd
+          ),
+            (this.currentBudget! += this.budgetToAdd),
+            (this.addBudgetClicked = false);
+        });
     }
   }
 }

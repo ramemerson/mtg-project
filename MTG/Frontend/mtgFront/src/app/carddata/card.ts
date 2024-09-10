@@ -5,7 +5,7 @@ import { PurchaseUris } from './purchaseUris'; // Note: Ensure the file name mat
 import { RelatedUris } from './relatedUris'; // Note: Ensure the file name matches the import
 
 export class Card {
-  forSale = false;
+  soldBy: string;
   id: string;
   oracle_id: string;
   multiverse_ids: string[];
@@ -70,6 +70,7 @@ export class Card {
   purchase_uris: PurchaseUris;
 
   constructor(data: any) {
+    this.soldBy = data.soldBy || null;
     this.id = data.id || null;
     this.oracle_id = data.oracle_id || null;
     this.multiverse_ids = data.multiverse_ids || null;

@@ -1,4 +1,3 @@
-import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import {
   BehaviorSubject,
@@ -23,7 +22,6 @@ export class AuthService {
   private currentUser: Observable<Account | null>;
 
   constructor(
-    private http: HttpClient,
     private loginRegisterControllerClient: LoginRegisterControllerClient,
     private accountControllerClient: AccountControllerClient
   ) {
@@ -38,6 +36,10 @@ export class AuthService {
 
   public get currentUserValue(): any {
     return this.currentUserSubject.value;
+  }
+
+  public get currentUserObservable(): Observable<Account | null> {
+    return this.currentUser;
   }
 
   public getAuthStatus(): Observable<boolean> {

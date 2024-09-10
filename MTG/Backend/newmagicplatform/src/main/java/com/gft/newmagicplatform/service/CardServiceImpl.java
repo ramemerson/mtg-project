@@ -50,8 +50,17 @@ public class CardServiceImpl implements CardService {
 
     @Transactional
     @Override
-    public void putCardForSale(Account account, String id) {
-        accountService.getAccountById(account.getId()).getCardsForSale().add(id);
+    public void toggleSaleStatus(Account account, String id) {
+        if (accountService.getAccountById(account.getId()).getCardsForSale().contains(id)) {
+            accountService.getAccountById(account.getId()).getCardsForSale().remove(id);
+        } else {
+            accountService.getAccountById(account.getId()).getCardsForSale().add(id);
+        }
+    }
+
+    @Override
+    public Set<String> getCardsForSale(Account account) {
+        return account.getCardsForSale();
     }
 
 }

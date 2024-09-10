@@ -2,12 +2,16 @@
     <div>
         <h1 *ngIf="!isLoggedIn" style="color: #fca600;">MTG - Card Trading Platform</h1>
         <div *ngIf="isLoggedIn">
-            <button class="mx-1" (click)="goHome()" pButton icon="pi pi-home" label="Home"></button>
-            <button class="mx-1" (click)="goToBrowse()" pButton icon="pi pi-search" label="Browse"></button>
-            <button class="mx-1" (click)="goToTrade()" pButton icon="pi pi-shop" label="Marketplace"></button>
-            <button class="mx-1" (click)="goToAccount()" pButton icon="pi pi-user" label="Account"></button>
+            <button class="mx-1" (click)="goHome(); homeClicked = true" [disabled]="homeClicked" pButton
+                icon="pi pi-home" label="Home"></button>
+            <button class="mx-1" (click)="goToBrowse(); browseClicked = true" [disabled]="browseClicked" pButton
+                icon="pi pi-search" label="Browse"></button>
+            <button class="mx-1" (click)="goToTrade(); marketClicked = true" [disabled]="marketClicked" pButton
+                icon="pi pi-shop" label="Marketplace"></button>
+            <button class="mx-1" (click)="goToAccount(); accountClicked = true" [disabled]="accountClicked" pButton
+                icon="pi pi-user" label="Account"></button>
             <button class="mx-1" (click)="logoutUser()" pButton icon="pi pi-sign-out"
-                label="Logout {{ currentUser.username }}">
+                label="Logout: {{ currentUser.username }}">
             </button>
         </div>
     </div>

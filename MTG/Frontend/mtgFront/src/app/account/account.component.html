@@ -1,25 +1,44 @@
 <div class="flex flex-row justify-content-center align-items-center mx-3 mt-3">
     <div>
         <p-card>
-            <h2>{{ currentUser.firstname}} {{ currentUser.lastname }}</h2>
+            <h2 *ngIf="currentUserObservable$ | async as account">{{ account.firstname}} {{ account.lastname }}</h2>
             <p-divider />
-            <p>Username: {{ currentUser.username }}</p>
+            <p *ngIf="currentUserObservable$ | async as account">Username: {{ account.username }}</p>
             <p-divider />
-            <p>Email: {{ currentUser.email }}</p>
+            <p *ngIf="currentUserObservable$ | async as account">Email: {{ account.email }}</p>
             <p-divider />
-            <p>Birthday: {{ currentUser.birthdayStringFormatted }}</p>
+            <p *ngIf="currentUserObservable$ | async as account">Birthday: {{ account.birthdayStringFormatted }}</p>
             <p-divider />
-            <p>Current Budget: €{{ currentUser.wallet!.budget }}</p>
+            <p>Current Budget: € {{ currentBudget }}</p>
             <p-divider />
-            <p>Decks Owned: {{ currentUser.decks!.length }}</p>
+            <p *ngIf="currentUserObservable$ | async as account">Decks Owned: {{ account.decks!.length }}</p>
             <p-divider />
             <p>Cards Owned: {{ accountCards.length }}</p>
             <p-divider />
-            <p-button class="flex flex-column justify-content-center align-items-center" (click)="editClicked = true"
-                icon="pi pi-user-edit" label="Update"></p-button>
+            <div class="flex justify-content-center align-items-center">
+                <p-button class="justify-content-center mx-3" (click)="editClicked = true" icon="pi pi-user-edit"
+                    label="Update">
+                </p-button>
+                <p-button class="justify-content-center" label="Add Budget" icon="pi pi-wallet"
+                    (click)="addBudgetClicked = true">
+
+                </p-button>
+            </div>
             <p-dialog [modal]="true" [draggable]="false" [resizable]="false" [(visible)]="editClicked"
                 header="Edit User Details">
                 <app-edit (submitClicked)="editClicked = false"></app-edit>
+            </p-dialog>
+            <p-dialog #budgetDialog [modal]="true" [draggable]="false" [resizable]="false"
+                [(visible)]="addBudgetClicked" header="Amount To Add" (onHide)="budgetToAdd = 0">
+                <div class="flex align-items-center mb-3 mt-5">
+                    <p-floatLabel>
+                        <p-inputNumber [(ngModel)]="budgetToAdd" inputId="integeronly" />
+                        <label for="number-input">Number</label>
+                    </p-floatLabel>
+                </div>
+                <p-button class="flex justify-content-center align-items-center" label="Add"
+                    (click)="addMoneyToAccount()" icon="pi pi-plus"></p-button>
+
             </p-dialog>
         </p-card>
     </div>
@@ -27,7 +46,7 @@
     <div class="mx-3">
         <p-card>
             <div class="flex flex-row flex-wrap">
-                <h2 class=" flex justify-content-center align-items-center mr-3">Cards</h2>
+                <h2 class=" flex justify-content-center align-items-center mr-3">Your Cards:</h2>
             </div>
             <p-divider />
             <div *ngIf="waitingForCards">
@@ -37,7 +56,7 @@
             <div *ngIf="!waitingForCards">
                 <div class="card-container overflow-x-hidden" style="height: 360px;"> <!-- Adjust height as needed -->
                     <div class="grid">
-                        <div class="mr-4 col-3" *ngFor="let card of accountCards">
+                        <div class="mr-6 col-3" *ngFor="let card of accountCards">
                             <p-image class="images" [src]="card.image_uris?.small" [alt]="card.name"
                                 (click)="cardClicked = true; currentCard = card" />
                         </div>
@@ -64,9 +83,9 @@
         <p>Set: {{ currentCard?.set}} ({{ currentCard?.set_name }}) </p>
         <p-divider />
         <div class="flex justify-content-center align-items-center">
-            <p-button class="justify-content-center mx-3" icon=" pi pi-cart-minus" label="Put for sale"
-                (click)="putCardForSale()">
-            </p-button>
+            <!-- <p-button class="justify-content-center mx-3" icon=" pi pi-cart-minus"
+                [label]="currentCardForSale ? 'Remove from sale' : 'Put for sale'" (click)="putCardForSale()">
+            </p-button> -->
             <p-button class="justify-content-center" icon="pi pi-trash" label="Delete card" severity="danger"
                 (click)="deleteCard()">
             </p-button>

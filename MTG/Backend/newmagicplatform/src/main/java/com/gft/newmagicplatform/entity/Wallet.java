@@ -20,4 +20,5 @@ public class Wallet {
     private Account account;
 
     private Double budget;
+
 }

@@ -71,3 +71,14 @@ app-root {
     width: 100%;
     opacity: 0.8;
 }
+
+.card-container {
+    width: 100%;
+    max-width: 600px;
+    /* Adjust based on your card size */
+}
+
+.images:hover {
+    opacity: 0.5;
+    cursor: pointer;
+}

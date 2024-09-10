@@ -38,10 +38,11 @@ import { ProgressBarModule } from 'primeng/progressbar';
 import { DialogModule } from 'primeng/dialog';
 import { EditComponent } from './account/edit/edit.component';
 import { CacheService } from './services/cache/cache.service';
-import { cachingInterceptor } from './http-interceptors/http-interceptor';
 import { ConfirmPopupModule } from 'primeng/confirmpopup';
 import { ConfirmationService } from 'primeng/api';
 import { TabViewModule } from 'primeng/tabview';
+import { InputNumberModule } from 'primeng/inputnumber';
+import { FloatLabelModule } from 'primeng/floatlabel';
 
 @NgModule({
   declarations: [
@@ -76,11 +77,13 @@ import { TabViewModule } from 'primeng/tabview';
     DialogModule,
     ConfirmPopupModule,
     TabViewModule,
+    InputNumberModule,
+    FloatLabelModule,
   ],
   providers: [
     ConfirmationService,
     CacheService,
-    provideHttpClient(withFetch(), withInterceptors([cachingInterceptor])),
+    provideHttpClient(withFetch()),
     importProvidersFrom(CommonModule, BrowserModule, AccountControllerClient),
     {
       provide: API_BASE_URL,

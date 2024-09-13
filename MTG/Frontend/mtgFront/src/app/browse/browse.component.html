@@ -1,1 +1,42 @@
-<p>browse works!</p>
+<div class="m-3">
+    <div class="card-content">
+        <p-card>
+            <p-table [value]="cards" [paginator]="true" [rows]="175" [showCurrentPageReport]="true"
+                currentPageReportTemplate="{first} to {last} of {totalRecords} cards loaded, total cards: {{ listObject.total_cards }}"
+                [pageLinks]="5" [scrollable]="true" scrollHeight="500px">
+                <ng-template pTemplate="caption">
+                    <div class="flex align-items-center justify-content-between">
+                        Cards
+                        <p-button icon="pi pi-refresh"></p-button>
+                    </div>
+                </ng-template>
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th>Image</th>
+                        <th>Name</th>
+                        <th>Type</th>
+                        <th>Price</th>
+                        <th>Rarity</th>
+                        <th>Set</th>
+                        <th>Released</th>
+                        <th>Artist</th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-product>
+                    <tr>
+                        <td><img [src]="product.image_uris?.art_crop" [alt]="'NA'" width="70" class="shadow-4" />
+                        </td>
+                        <td>{{ product.name }}</td>
+                        <td>{{ product.type_line }}</td>
+                        <td>{{ product.prices.eur != null ? '€' + product.prices.eur : 'NA' }}</td>
+                        <td>{{ product.rarity }}</td>
+                        <td>{{ product.set_name }}</td>
+                        <td>{{ product.released_at.split('-')[0] }}</td>
+                        <td>{{ product.artist }}</td>
+                    </tr>
+                </ng-template>
+            </p-table>
+        </p-card>
+    </div>
+
+</div>

@@ -10,7 +10,7 @@
                             <div class="card-container overflow-x-hidden" style="height: 360px;">
                                 <!-- Adjust height as needed -->
                                 <div class="grid">
-                                    <div class="mr-6 mb-3" *ngFor="let card of allCardsForSale">
+                                    <div class="mr-6 col-3" *ngFor="let card of allCardsForSale">
                                         <p-image class="images" [src]="card.image_uris?.small" [alt]="card.name"
                                             (click)="cardClicked = true; currentCard = card" />
                                     </div>
@@ -28,7 +28,7 @@
                         <div class="card-container overflow-x-hidden" style="height: 360px;">
                             <!-- Adjust height as needed -->
                             <div class="grid">
-                                <div class="mr-6 mb-3" *ngFor="let card of currentUserCardsForSale">
+                                <div class="mr-6 col-3" *ngFor="let card of currentUserCardsForSale">
                                     <p-image class="images" [src]="card.image_uris?.small" [alt]="card.name"
                                         (click)="cardClickedForSale = true; currentCard = card" />
                                 </div>
@@ -39,7 +39,7 @@
                         <div class="card-container overflow-x-hidden" style="height: 360px;">
                             <!-- Adjust height as needed -->
                             <div class="grid">
-                                <div class="mr-6 mb-3" *ngFor="let card of currentUserCardsNotForSale">
+                                <div class="mr-6 col-3" *ngFor="let card of currentUserCardsNotForSale">
                                     <p-image class="images" [src]="card.image_uris?.small" [alt]="card.name"
                                         (click)="cardClickedNotForSale = true; currentCard = card" />
                                 </div>

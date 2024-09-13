@@ -1006,10 +1006,7 @@ export class WalletControllerClient {
   /**
    * @return OK
    */
-  subtractBudget(
-    amountToSubtract: number,
-    accIdLong: number
-  ): Observable<number> {
+  subtractBudget(amountToSubtract: number, accId: number): Observable<number> {
     let url_ = this.baseUrl + '/wallet/subtractBudget?';
     if (amountToSubtract === undefined || amountToSubtract === null)
       throw new Error(
@@ -1018,11 +1015,11 @@ export class WalletControllerClient {
     else
       url_ +=
         'amountToSubtract=' + encodeURIComponent('' + amountToSubtract) + '&';
-    if (accIdLong === undefined || accIdLong === null)
+    if (accId === undefined || accId === null)
       throw new Error(
-        "The parameter 'accIdLong' must be defined and cannot be null."
+        "The parameter 'accId' must be defined and cannot be null."
       );
-    else url_ += 'accIdLong=' + encodeURIComponent('' + accIdLong) + '&';
+    else url_ += 'accId=' + encodeURIComponent('' + accId) + '&';
     url_ = url_.replace(/[?&]$/, '');
 
     let options_: any = {
@@ -1204,6 +1201,108 @@ export class CardControllerClient {
   ) {
     this.http = http;
     this.baseUrl = baseUrl ?? 'http://localhost:8080';
+  }
+
+  /**
+   * @return OK
+   */
+  tradeCard(
+    cardId: string,
+    accIdGivingCard: number,
+    accIdTakingCard: number
+  ): Observable<boolean> {
+    let url_ = this.baseUrl + '/card/tradeCard?';
+    if (cardId === undefined || cardId === null)
+      throw new Error(
+        "The parameter 'cardId' must be defined and cannot be null."
+      );
+    else url_ += 'cardId=' + encodeURIComponent('' + cardId) + '&';
+    if (accIdGivingCard === undefined || accIdGivingCard === null)
+      throw new Error(
+        "The parameter 'accIdGivingCard' must be defined and cannot be null."
+      );
+    else
+      url_ +=
+        'accIdGivingCard=' + encodeURIComponent('' + accIdGivingCard) + '&';
+    if (accIdTakingCard === undefined || accIdTakingCard === null)
+      throw new Error(
+        "The parameter 'accIdTakingCard' must be defined and cannot be null."
+      );
+    else
+      url_ +=
+        'accIdTakingCard=' + encodeURIComponent('' + accIdTakingCard) + '&';
+    url_ = url_.replace(/[?&]$/, '');
+
+    let options_: any = {
+      observe: 'response',
+      responseType: 'blob',
+      headers: new HttpHeaders({
+        Accept: '*/*',
+      }),
+    };
+
+    return this.http
+      .request('get', url_, options_)
+      .pipe(
+        _observableMergeMap((response_: any) => {
+          return this.processTradeCard(response_);
+        })
+      )
+      .pipe(
+        _observableCatch((response_: any) => {
+          if (response_ instanceof HttpResponseBase) {
+            try {
+              return this.processTradeCard(response_ as any);
+            } catch (e) {
+              return _observableThrow(e) as any as Observable<boolean>;
+            }
+          } else
+            return _observableThrow(response_) as any as Observable<boolean>;
+        })
+      );
+  }
+
+  protected processTradeCard(response: HttpResponseBase): Observable<boolean> {
+    const status = response.status;
+    const responseBlob =
+      response instanceof HttpResponse
+        ? response.body
+        : (response as any).error instanceof Blob
+        ? (response as any).error
+        : undefined;
+
+    let _headers: any = {};
+    if (response.headers) {
+      for (let key of response.headers.keys()) {
+        _headers[key] = response.headers.get(key);
+      }
+    }
+    if (status === 200) {
+      return blobToText(responseBlob).pipe(
+        _observableMergeMap((_responseText: string) => {
+          let result200: any = null;
+          let resultData200 =
+            _responseText === ''
+              ? null
+              : JSON.parse(_responseText, this.jsonParseReviver);
+          result200 = resultData200 !== undefined ? resultData200 : <any>null;
+
+          return _observableOf(result200);
+        })
+      );
+    } else if (status !== 200 && status !== 204) {
+      return blobToText(responseBlob).pipe(
+        _observableMergeMap((_responseText: string) => {
+          return throwException(
+            'An unexpected server error occurred.',
+            status,
+            _responseText,
+            _headers
+          );
+        })
+      );
+    }
+    return _observableOf(null as any);
   }
 
   /**

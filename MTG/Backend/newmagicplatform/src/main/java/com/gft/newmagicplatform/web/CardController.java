@@ -50,4 +50,11 @@ public class CardController {
         return cardService.getCardsForSale(accountService.getAccountById(accIdLong));
     }
 
+    @GetMapping("/tradeCard")
+    public boolean tradeCard(@RequestParam String cardId, @RequestParam Long accIdGivingCard,
+            @RequestParam Long accIdTakingCard) {
+        return cardService.tradeCard(accountService.getAccountById(accIdGivingCard),
+                accountService.getAccountById(accIdTakingCard), cardId);
+    }
+
 }

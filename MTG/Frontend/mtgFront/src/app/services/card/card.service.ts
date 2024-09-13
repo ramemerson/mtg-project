@@ -3,6 +3,7 @@ import { CardControllerClient } from '../mtg.service';
 import { catchError, forkJoin, map, Observable, switchMap } from 'rxjs';
 import { Card } from '../../carddata/card';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { List } from '../../listdata/list';
 
 @Injectable({
   providedIn: 'root',
@@ -29,6 +30,25 @@ export class CardService {
         throw new Error(error);
       })
     );
+  }
+
+  getListFromApi(): Observable<List> {
+    const headers = new HttpHeaders({
+      'User-Agent': this.userAgent,
+      Accept: 'application/json',
+    });
+
+    console.log('Attempting to get list from Scryfall API.');
+
+    return this.http
+      .get<any>(`${this.apiUrl}/cards/search?q=*`, { headers })
+      .pipe(
+        map((response) => new List(response)),
+        catchError((error) => {
+          console.error('Error getting cards list: ', error);
+          throw new Error(error);
+        })
+      );
   }
 
   loadCardsForSaleFromAccount(accountId: number): Observable<Card[]> {

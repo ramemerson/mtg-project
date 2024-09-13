@@ -35,15 +35,16 @@ public class CardServiceImpl implements CardService {
 
     @Override
     public boolean tradeCard(Account accountGiving, Account accountTaking, String cardId) throws UserNotFoundException {
-        Account giver = accountService.getAccountById(accountGiving.getId());
-        Account taker = accountService.getAccountById(accountTaking.getId());
-
-        if (!giver.getCards().contains(cardId)) {
+        if (!accountService.getAccountById(accountGiving.getId()).getCards().contains(cardId)) {
             return false;
         }
 
-        deleteCardFromAccount(giver, cardId);
-        addCardToAccount(taker, cardId);
+        addCardToAccount(accountService.getAccountById(accountTaking.getId()), cardId);
+        deleteCardFromAccount(accountService.getAccountById(accountGiving.getId()), cardId);
+
+        if (getCardsForSale(accountGiving).contains(cardId)) {
+            removeCardFromSale(accountGiving, cardId);
+        }
 
         return true;
     }
@@ -61,6 +62,11 @@ public class CardServiceImpl implements CardService {
     @Override
     public Set<String> getCardsForSale(Account account) {
         return account.getCardsForSale();
+    }
+
+    @Override
+    public void removeCardFromSale(Account account, String id) {
+        getCardsForSale(account).remove(id);
     }
 
 }

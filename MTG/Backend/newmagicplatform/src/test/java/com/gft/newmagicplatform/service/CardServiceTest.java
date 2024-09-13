@@ -42,6 +42,7 @@ public class CardServiceTest {
         mockAccount1 = new Account("Chris", "Emerson", "breezy", "123", "1996-12-10", "cmen@gft.com");
         mockAccount1.setId(1L);
         mockAccount1.setCards(new HashSet<>());
+        mockAccount1.setCardsForSale(new HashSet<>());
 
         mockAccount2 = new Account("Chris", "Emerson", "breezy", "123", "1996-12-10", "cmen@gft.com");
         mockAccount2.setId(2L);

@@ -43,6 +43,9 @@ import { ConfirmationService } from 'primeng/api';
 import { TabViewModule } from 'primeng/tabview';
 import { InputNumberModule } from 'primeng/inputnumber';
 import { FloatLabelModule } from 'primeng/floatlabel';
+import { PanelModule } from 'primeng/panel';
+import { TableModule } from 'primeng/table';
+import { ThemeSwitcherComponent } from './design/theme/theme-switcher/theme-switcher.component';
 
 @NgModule({
   declarations: [
@@ -57,6 +60,7 @@ import { FloatLabelModule } from 'primeng/floatlabel';
     TradeComponent,
     AccountComponent,
     EditComponent,
+    ThemeSwitcherComponent,
   ],
   imports: [
     BrowserModule,
@@ -79,6 +83,8 @@ import { FloatLabelModule } from 'primeng/floatlabel';
     TabViewModule,
     InputNumberModule,
     FloatLabelModule,
+    PanelModule,
+    TableModule,
   ],
   providers: [
     ConfirmationService,

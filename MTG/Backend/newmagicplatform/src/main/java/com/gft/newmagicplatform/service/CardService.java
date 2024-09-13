@@ -17,4 +17,6 @@ public interface CardService {
     public boolean tradeCard(Account accountGiving, Account accountTaking, String cardId);
 
     public Set<String> getCardsForSale(Account account);
+
+    public void removeCardFromSale(Account account, String id);
 }

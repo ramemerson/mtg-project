@@ -145,21 +145,23 @@ export class TradeComponent {
 
         // proceeding after user is fetched
 
-        // if user buying card has enough budget
-        if (
-          this.currentUser.wallet?.budget! >= this.currentCard?.prices!.eur!
-        ) {
-          // Adding the card to the current user
-          this.addCardToAccount(this.currentCard?.id!, this.currentUser.id!);
+        const cardPrice = this.currentCard?.prices.eur;
+        if (!cardPrice || isNaN(cardPrice)) {
+          console.error('Card price is not valid: ', cardPrice);
+          return;
+        }
 
-          // subtract budget from current user
-          this.subtractBudgetFromAccount(
-            this.currentCard?.prices.eur!,
+        // if user buying card has enough budget
+        if (this.currentUser.wallet?.budget! >= cardPrice) {
+          // trade card
+          this.tradeCard(
+            this.currentCard?.id!,
+            soldBy.id!,
             this.currentUser.id!
           );
 
-          // remove card from sellers account
-          this.removeCardFromAccount(this.currentCard!.id, soldBy.id!);
+          // subtract budget from current user
+          this.subtractBudgetFromAccount(cardPrice, this.currentUser.id!);
 
           // add the price to the sellers budget
           this.addBudgetToAccount(this.currentCard?.prices.eur!, soldBy.id!);
@@ -208,18 +210,6 @@ export class TradeComponent {
     );
   }
 
-  addCardToAccount(id: string, accountId: number) {
-    this.cardController.save(id, accountId).subscribe({
-      next: (response) => {
-        this.fetchCurrentAccountCardsNotForSale();
-        console.log('Card added to current user', response);
-      },
-      error: (err) => {
-        console.log('Error adding card to current user: ', err);
-      },
-    });
-  }
-
   subtractBudgetFromAccount(amount: number, accountId: number) {
     this.walletController.subtractBudget(amount, accountId).subscribe({
       next: (response) => {
@@ -238,7 +228,7 @@ export class TradeComponent {
     this.walletController.addBudget(amount, accountId).subscribe({
       next: (response) => {
         console.log(
-          'Added budget to sellers wallet, sellers budget: ',
+          'Added budget to seller wallet, sellers budget: ',
           response
         );
       },
@@ -248,16 +238,19 @@ export class TradeComponent {
     });
   }
 
-  removeCardFromAccount(cardId: string, accountId: number) {
-    this.cardController.delete(cardId, accountId).subscribe({
+  tradeCard(cardId: string, accIdGiving: number, accIdTaking: number) {
+    console.log(
+      'Attempting to trade card from account with id: ',
+      accIdGiving,
+      ', to account with id: ',
+      accIdTaking
+    );
+    this.cardController.tradeCard(cardId, accIdGiving, accIdTaking).subscribe({
       next: (response) => {
-        console.log('Removed card from sellers account: ', response);
-        this.allCardsForSale = this.allCardsForSale.filter(
-          (card) => card.id !== this.currentCard!.id
-        );
+        console.log('Card traded: ', response);
       },
       error: (err) => {
-        console.error('Error removing card from sellers account: ', err);
+        console.error('Error trading card: ', err);
       },
     });
   }

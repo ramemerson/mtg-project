@@ -46,6 +46,8 @@ import { FloatLabelModule } from 'primeng/floatlabel';
 import { PanelModule } from 'primeng/panel';
 import { TableModule } from 'primeng/table';
 import { ThemeSwitcherComponent } from './design/theme/theme-switcher/theme-switcher.component';
+import { IconFieldModule } from 'primeng/iconfield';
+import { InputIconModule } from 'primeng/inputicon';
 
 @NgModule({
   declarations: [
@@ -85,6 +87,8 @@ import { ThemeSwitcherComponent } from './design/theme/theme-switcher/theme-swit
     FloatLabelModule,
     PanelModule,
     TableModule,
+    IconFieldModule,
+    InputIconModule,
   ],
   providers: [
     ConfirmationService,

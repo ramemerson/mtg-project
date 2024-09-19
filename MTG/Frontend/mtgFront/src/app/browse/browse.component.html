@@ -1,9 +1,11 @@
 <div class="m-3">
     <div class="card-content">
         <p-card>
-            <p-table [value]="cards" [paginator]="true" [rows]="175" [showCurrentPageReport]="true"
-                currentPageReportTemplate="{first} to {last} of {totalRecords} cards loaded, total cards: {{ listObject.total_cards }}"
-                [pageLinks]="5" [scrollable]="true" scrollHeight="500px">
+            <p-table #dt [value]="cards" [paginator]="true" [rows]="175" [showCurrentPageReport]="true"
+                currentPageReportTemplate="{first} to {last} of {{ listObject.total_cards }}" [pageLinks]="5"
+                [scrollable]="true" scrollHeight="500px" [lazy]="true" (onLazyLoad)="loadPage($event)"
+                [totalRecords]="listObject.total_cards" [rows]="rows" [loading]="loading"
+                [globalFilterFields]="['name', 'type_line', 'rarity']">
                 <ng-template pTemplate="caption">
                     <div class="flex align-items-center justify-content-between">
                         Cards
@@ -13,7 +15,10 @@
                 <ng-template pTemplate="header">
                     <tr>
                         <th>Image</th>
-                        <th>Name</th>
+                        <th>Name
+                            <input pInputText type="text" (input)="dt.">
+                        </th>
+
                         <th>Type</th>
                         <th>Price</th>
                         <th>Rarity</th>
